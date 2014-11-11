@@ -2,12 +2,20 @@
 
 Private Puppet Forge Server supporting local files and both v1 and v3 API proxies. Heavily inspired by the [Puppet Library](https://github.com/drrb/puppet-library).
 
+[![Build Status](https://api.travis-ci.org/unibet/puppet-forge-server.svg)](https://travis-ci.org/unibet/puppet-forge-server)
+[![Gem Version](https://badge.fury.io/rb/puppet-forge-server.svg)](http://badge.fury.io/rb/puppet-forge-server)
+
 Puppet Forge Server provides approximated implementation of both [v1](https://projects.puppetlabs.com/projects/module-site/wiki/Server-api)
 and [v3](https://forgeapi.puppetlabs.com/) APIs, but behavioral deviations from the official implementation might occur.
 
 ## Installation
 
-Since the gem is not published yet, please build from source.
+Install the gem
+```
+gem install puppet-forge-server
+puppet-forge-server --help
+```
+or get the latest source 
 ```
 git clone https://github.com/unibet/puppet-forge-server
 cd puppet-forge-server
@@ -107,8 +115,7 @@ Puppet module *metadata* json representation is used as a main business *model*.
 ## TODO
 
 1. Create UTs for core logic
-2. Publish gem at https://rubygems.org/
-3. Implement *source* and *git* backends to match [puppet library](https://github.com/drrb/puppet-library) feature set
+2. Implement *source* and *git* backends to match [puppet library](https://github.com/drrb/puppet-library) feature set
 
 ## License
 
