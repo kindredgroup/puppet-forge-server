@@ -16,6 +16,7 @@
 # limitations under the License.
 
 require 'optparse'
+require 'tmpdir'
 
 module PuppetForgeServer::Utils
   module OptionParser
