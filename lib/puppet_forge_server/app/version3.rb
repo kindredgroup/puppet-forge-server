@@ -36,7 +36,9 @@ module PuppetForgeServer::App
       end.flatten.uniq
 
       halt 404, {'pagination' => {'next' => false}, 'results' => []}.to_json if metadata.empty?
-      {'pagination' => {'next' => false}, 'results' => get_releases(metadata)}.to_json
+
+      releases = get_releases(metadata)
+      {'pagination' => {'next' => false, 'total' => releases.count}, 'results' => releases}.to_json
     end
 
     get '/v3/files/*' do

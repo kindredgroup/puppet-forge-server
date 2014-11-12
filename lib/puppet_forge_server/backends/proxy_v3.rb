@@ -29,13 +29,21 @@ module PuppetForgeServer::Backends
     def get_metadata(author, name, options = {})
       options = ({:with_checksum => true}).merge(options)
       query ="#{author}-#{name}"
-      releases = options[:version] ? [JSON.parse(get("/v3/releases/#{query}-#{options[:version]}"))] : get_all_release_pages("/v3/releases?module=#{query}")
-      get_release_metadata(releases)
+      begin
+        releases = options[:version] ? [JSON.parse(get("/v3/releases/#{query}-#{options[:version]}"))] : get_all_release_pages("/v3/releases?module=#{query}")
+        get_release_metadata(releases)
+      rescue OpenURI::HTTPError
+        #ignore
+      end
     end
 
     def query_metadata(query, options = {})
       author, name = query.split('-')
-      get_metadata(author, name, options) if author && name
+      begin
+        get_metadata(author, name, options) if author && name
+      rescue OpenURI::HTTPError
+        #ignore
+      end
     end
 
     private
@@ -55,7 +63,7 @@ module PuppetForgeServer::Backends
             :metadata => PuppetForgeServer::Models::Metadata.new(element['metadata']),
             :checksum => element['file_md5'],
             :path => element['file_uri'],
-            :tags => element['tags']
+            :tags => (element['tags'] + (element['metadata']['tags'] ? element['metadata']['tags'] : [])).flatten.uniq
         }
       end.compact
     end

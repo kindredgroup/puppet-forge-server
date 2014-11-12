@@ -42,7 +42,7 @@ class Array
 
   def version_sort_by
     sort_by do |element|
-      version = yield(element)
+      version = yield(element).gsub('-', '.pre.')
       Gem::Version.new(version)
     end
   end

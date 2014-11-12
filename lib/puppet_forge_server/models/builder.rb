@@ -23,7 +23,7 @@ module PuppetForgeServer::Models
     end
 
     def method_missing (method_name, *args, &block)
-      STDERR.puts "Method #{method_name} with args #{args} not found in #{self.class.to_s}" unless method_name == :to_ary
+      STDERR.puts "ERROR: Method #{method_name} with args #{args} not found in #{self.class.to_s}" unless method_name == :to_ary
     end
 
     def to_hash

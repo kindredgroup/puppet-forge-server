@@ -31,12 +31,20 @@ module PuppetForgeServer::Backends
     def get_metadata(author, name, options = {})
       options = ({:with_checksum => true}).merge(options)
       query ="#{author}/#{name}"
-      get_module_metadata(JSON.parse(get("/modules.json?q=#{query}")).select { |e| e['full_name'].match("#{query}") }, options)
+      begin
+        get_module_metadata(JSON.parse(get("/modules.json?q=#{query}")).select { |e| e['full_name'].match("#{query}") }, options)
+      rescue OpenURI::HTTPError
+        #ignore
+      end
     end
 
     def query_metadata(query, options = {})
       options = ({:with_checksum => true}).merge(options)
-      get_module_metadata(JSON.parse(get("/modules.json?q=#{query}")).select { |e| e['full_name'].match("*#{query}*") }, options)
+      begin
+        get_module_metadata(JSON.parse(get("/modules.json?q=#{query}")).select { |e| e['full_name'].match("*#{query}*") }, options)
+      rescue OpenURI::HTTPError
+        #ignore
+      end
     end
 
     private

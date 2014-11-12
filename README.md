@@ -15,7 +15,7 @@ Install the gem
 gem install puppet-forge-server
 puppet-forge-server --help
 ```
-or get the latest source 
+or get the latest source
 ```
 git clone https://github.com/unibet/puppet-forge-server
 cd puppet-forge-server

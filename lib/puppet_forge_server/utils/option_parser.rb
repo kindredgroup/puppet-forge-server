@@ -33,15 +33,15 @@ module PuppetForgeServer::Utils
         opts.banner = "Usage: #{File.basename $0} [options]"
         opts.version = PuppetForgeServer::VERSION
 
-        opts.on('-p', '--port PORT', 'Port to listen on (defaults to whatever Rack wants to use)') do |port|
+        opts.on('-p', "--port PORT', 'Port to listen on (default: #{@@DEFAULT_PORT})") do |port|
           options[:port] = port
         end
 
-        opts.on('-b', '--bind-host HOSTNAME', 'Host name to bind to (defaults to whatever Rack wants to use)') do |hostname|
+        opts.on('-b', '--bind-host HOSTNAME', 'Host name to bind to (default: whatever Rack wants to use)') do |hostname|
           options[:hostname] = hostname
         end
 
-        opts.on('--daemonize', 'Run the server in the background') do
+        opts.on('-D', '--daemonize', "Run the server in the background (default: #{@@DEFAULT_DAEMONIZE})") do
           options[:daemonize] = true
           options[:pidfile] = @@DEFAULT_PID_FILE unless options[:pidfile]
         end
@@ -57,11 +57,8 @@ module PuppetForgeServer::Utils
         opts.on('-x', '--proxy URL', 'Remote forge to proxy (can be specified multiple times)') do |url|
           options[:backend]['Proxy'] << normalize_url(url)
         end
-        opts.on('--source-dir DIR', "Directory containing a module's source (can be specified multiple times)") do |module_dir|
-          options[:backend]['Source'] << module_dir
-        end
 
-        opts.on('--cache-basedir DIR', "Cache all proxies' downloaded modules under this directory") do |cache_basedir|
+        opts.on('--cache-basedir DIR', "Cache all proxies' downloaded modules under this directory (default: #{@@DEFAULT_CACHE_DIR})") do |cache_basedir|
           options[:cache_basedir] = cache_basedir
         end
       end
