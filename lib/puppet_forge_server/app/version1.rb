@@ -23,6 +23,14 @@ module PuppetForgeServer::App
     include PuppetForgeServer::Api::V1::Modules
     include PuppetForgeServer::Utils::Buffer
 
+    configure do
+      use ::Rack::CommonLogger, PuppetForgeServer::Logger.get(:access)
+    end
+
+    before {
+      env['rack.errors'] =  PuppetForgeServer::Logger.get(:server)
+    }
+
     def initialize(backends)
       super(nil)
       @backends = backends

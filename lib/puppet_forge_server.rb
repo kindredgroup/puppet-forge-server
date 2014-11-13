@@ -20,6 +20,7 @@ require 'puppet_forge_server/version'
 module PuppetForgeServer
   autoload :Server, 'puppet_forge_server/server'
   autoload :Errors, 'puppet_forge_server/errors'
+  autoload :Logger, 'puppet_forge_server/logger'
 
   module Api
     module V1

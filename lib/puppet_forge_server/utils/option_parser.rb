@@ -26,6 +26,7 @@ module PuppetForgeServer::Utils
     @@DEFAULT_PORT = 8080
     @@DEFAULT_PID_FILE = File.join(Dir.tmpdir.to_s, 'puppet-forge-server', 'server.pid')
     @@DEFAULT_CACHE_DIR = File.join(Dir.tmpdir.to_s, 'puppet-forge-server', 'cache')
+    @@DEFAULT_LOG_DIR = File.join(Dir.tmpdir.to_s, 'puppet-forge-server', 'log')
 
     def parse_options(args)
       options = {:daemonize => @@DEFAULT_DAEMONIZE, :cache_basedir => @@DEFAULT_CACHE_DIR, :port => @@DEFAULT_PORT}
@@ -43,7 +44,6 @@ module PuppetForgeServer::Utils
 
         opts.on('-D', '--daemonize', "Run the server in the background (default: #{@@DEFAULT_DAEMONIZE})") do
           options[:daemonize] = true
-          options[:pidfile] = @@DEFAULT_PID_FILE unless options[:pidfile]
         end
 
         opts.on('--pidfile FILE', 'Write a pidfile to this location after starting') do |pidfile|
@@ -61,12 +61,31 @@ module PuppetForgeServer::Utils
         opts.on('--cache-basedir DIR', "Cache all proxies' downloaded modules under this directory (default: #{@@DEFAULT_CACHE_DIR})") do |cache_basedir|
           options[:cache_basedir] = cache_basedir
         end
+
+        opts.on('--log-dir DIR', "Directory containing all server logs (if daemonized default: #{@@DEFAULT_LOG_DIR})") do |log_dir|
+          options[:log_dir] = log_dir
+        end
+
+        opts.on('--debug', 'Log everything into STDERR') do
+          options[:debug] = true
+        end
       end
       begin
         option_parser.parse(args)
       rescue ::OptionParser::InvalidOption => parse_error
         raise PuppetForgeServer::Errors::Expected, parse_error.message + "\n" + option_parser.help
       end
+
+      # Handle option dependencies
+      if options[:daemonize]
+        options[:pidfile] = @@DEFAULT_PID_FILE unless options[:pidfile]
+        options[:log_dir] = @@DEFAULT_LOG_DIR unless options[:log_dir]
+      end
+
+      if options[:log_dir] && !options[:daemonize]
+        options[:debug] = true
+      end
+
       return options
     end
   end

@@ -21,40 +21,49 @@ module PuppetForgeServer
     include PuppetForgeServer::Utils::OptionParser
     include PuppetForgeServer::Utils::Http
 
-    def initialize(log = STDERR)
-      @log = log
-    end
-
     def go(args)
       begin
         options = parse_options(args)
+        @log = logging(options)
         backends = backends(options)
         server = build(backends)
         announce(options, backends)
         start(server, options)
       rescue PuppetForgeServer::Errors::Expected
-        @log.puts "Error: #{error}"
+        @log.error error
       end
+    end
+
+    def logging(options)
+      if options[:log_dir]
+        FileUtils.mkdir_p options[:log_dir]
+        server_loggers = [File.join(options[:log_dir], 'server.log')]
+        server_loggers << STDERR if options[:debug]
+        access_loggers = [File.join(options[:log_dir], 'access.log')]
+        access_loggers << STDERR if options[:debug]
+        PuppetForgeServer::Logger.set({:server => server_loggers, :access => access_loggers})
+      end
+      PuppetForgeServer::Logger.get
     end
 
     def build(backends)
       Rack::Mount::RouteSet.new do |set|
         set.add_route PuppetForgeServer::App::Version1.new(backends)
-        set.add_route ::PuppetForgeServer::App::Version3.new(backends)
+        set.add_route PuppetForgeServer::App::Version3.new(backends)
       end
     end
 
     def announce(options, backends)
       options = options.clone
       options.default = 'default'
-      @log.puts " +- Daemonizing: #{options[:daemonize]}"
-      @log.puts " |- Port: #{options[:port]}"
-      @log.puts " |- Host: #{options[:hostname]}"
-      @log.puts " |- Pidfile: #{options[:pidfile]}" if options[:pidfile]
-      @log.puts " |- Server: #{options[:server]}"
-      @log.puts ' `- Backends:'
+      @log.info " +- Daemonizing: #{options[:daemonize]}"
+      @log.info " |- Port: #{options[:port]}"
+      @log.info " |- Host: #{options[:hostname]}"
+      @log.info " |- Pidfile: #{options[:pidfile]}" if options[:pidfile]
+      @log.info " |- Server: #{options[:server]}"
+      @log.info ' `- Backends:'
       backends.each do |backend|
-        @log.puts "    - #{backend.inspect}"
+        @log.info "    - #{backend.inspect}"
       end
     end
 
@@ -76,7 +85,7 @@ module PuppetForgeServer
         typed_backends.map do |url|
           case type
             when 'Proxy'
-              @log.puts "Detecting API version for #{url}..."
+              @log.info "Detecting API version for #{url}..."
               PuppetForgeServer::Backends.const_get("#{type}V#{get_api_version(url)}").new(url.chomp('/'), options[:cache_basedir])
             else
               PuppetForgeServer::Backends.const_get(type).new(url)
