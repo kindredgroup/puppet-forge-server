@@ -90,6 +90,23 @@ Run librarian-puppet with *--no-use-v1-api* option to instruct it to use v3 API
 ```
 librarian-puppet install --no-use-v1-api
 ```
+
+### Daemon
+
+Normally one would want to run server as a deamon:
+
+```
+# Assuming puppet-forge-server gem was installed
+# Create deamon user
+sudo adduser forge -d /opt/forge -s /bin/false
+# Create log, cache and modules directories
+sudo -u forge mkdir -p /opt/forge/log /opt/forge/modules /opt/forge/cache
+# Start the server
+sudo -u forge puppet-forge-server -D -m /opt/forge/modules -x https://forgeapi.puppetlabs.com --log-dir /opt/forge/log --cache-basedir /opt/forge/cache --pidfile /opt/forge/server.pid
+```
+
+You are done. Now go install some puppet modules.
+
 ## Architecture
 
 Code is structured with MVC in mind to allow easier  maintenance and readability
