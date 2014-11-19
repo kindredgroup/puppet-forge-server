@@ -41,7 +41,7 @@ module PuppetForgeServer::Api::V3
         end
       end
 
-      STDERR.puts 'WARNING: Requested module count is more than 1' unless modules.values.count == 1
+      PuppetForge::Logger.get.error 'WARNING: Requested module count is more than 1' unless modules.values.count == 1
       modules.values.first
     end
 
