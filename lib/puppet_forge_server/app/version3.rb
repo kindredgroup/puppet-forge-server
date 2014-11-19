@@ -23,6 +23,7 @@ module PuppetForgeServer::App
     include PuppetForgeServer::Utils::Buffer
 
     configure do
+      enable :logging
       use ::Rack::CommonLogger, PuppetForgeServer::Logger.get(:access)
     end
 
@@ -41,7 +42,7 @@ module PuppetForgeServer::App
       author, name, version = params[:module].split '-'
       metadata = @backends.map do |backend|
         backend.get_metadata(author, name, {:version => version})
-      end.flatten.uniq
+      end.flatten.compact.uniq
 
       halt 404, {'pagination' => {'next' => false}, 'results' => []}.to_json if metadata.empty?
 
@@ -68,7 +69,7 @@ module PuppetForgeServer::App
 
       metadata = @backends.map do |backend|
         backend.get_metadata(author, name)
-      end.flatten.uniq
+      end.flatten.compact.uniq
 
       halt 404, {'errors' => ['404 Not found']}.to_json if metadata.empty?
 

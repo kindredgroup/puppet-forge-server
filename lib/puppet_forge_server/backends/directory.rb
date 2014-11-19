@@ -55,13 +55,12 @@ module PuppetForgeServer::Backends
     def get_file_metadata(file_name, options)
       options = ({:with_checksum => true}).merge(options)
       Dir["#{@module_dir}/**/#{file_name}"].map do |path|
-        checksum = Digest::MD5.hexdigest(File.read(path)) if options[:with_checksum] == true
         {
             :metadata => PuppetForgeServer::Models::Metadata.new(read_metadata(path)),
-            :checksum => checksum,
+            :checksum => options[:with_checksum] == true ? Digest::MD5.hexdigest(File.read(path)) : nil,
             :path => "/#{Pathname.new(path).relative_path_from(Pathname.new(@module_dir))}"
         }
-      end.compact
+      end
     end
   end
 end

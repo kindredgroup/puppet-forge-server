@@ -65,7 +65,7 @@ module PuppetForgeServer::Backends
             :path => element['file_uri'],
             :tags => (element['tags'] + (element['metadata']['tags'] ? element['metadata']['tags'] : [])).flatten.uniq
         }
-      end.compact
+      end
     end
   end
 end

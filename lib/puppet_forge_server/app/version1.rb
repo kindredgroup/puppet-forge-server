@@ -24,6 +24,7 @@ module PuppetForgeServer::App
     include PuppetForgeServer::Utils::Buffer
 
     configure do
+      enable :logging
       use ::Rack::CommonLogger, PuppetForgeServer::Logger.get(:access)
     end
 
@@ -46,7 +47,7 @@ module PuppetForgeServer::App
 
       metadata = @backends.map do |backend|
         backend.get_metadata(author, name, {:version => version, :with_checksum => false})
-      end.flatten.uniq
+      end.flatten.compact.uniq
 
       halt 400, {'errors' => ["'#{params[:module]}' is not a valid module slug"]}.to_json if metadata.empty?
 
@@ -68,7 +69,7 @@ module PuppetForgeServer::App
       query = params[:q]
       metadata = @backends.map do |backend|
         backend.query_metadata(query, {:with_checksum => false})
-      end.flatten.uniq
+      end.flatten.compact.uniq
       get_modules(metadata).to_json
     end
   end

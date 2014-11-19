@@ -71,7 +71,7 @@ module PuppetForgeServer::Backends
               :tags => tags
           }
         end
-      end.compact
+      end
     end
   end
 end
