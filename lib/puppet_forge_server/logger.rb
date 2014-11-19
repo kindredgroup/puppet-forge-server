@@ -35,8 +35,17 @@ module PuppetForgeServer
     end
 
     def method_missing (method_name, *args, &block)
-      method_name = method_name == :write ? :'<<' : method_name
+      method_name = case method_name
+                      when :write, :puts
+                        '<<'
+                      else
+                        method_name
+                    end
       @loggers.each { |logger| logger.send(method_name, args.first) }
+    end
+
+    def respond_to?(method_name, include_private = false)
+      @loggers.each { |logger| false unless logger.respond_to? method_name }
     end
 
     class << self
