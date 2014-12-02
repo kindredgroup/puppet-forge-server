@@ -43,6 +43,13 @@ module PuppetForgeServer::Backends
       File.open(path, 'r') if File.exist?(path)
     end
 
+    def upload(file_data)
+      File.open(File.join(@module_dir, file_data[:filename]), 'w') do |f|
+        f.write(file_data[:tempfile].read)
+      end
+      true
+    end
+
     private
     def read_metadata(archive_path)
       metadata_file = read_entry(archive_path, %r[[^/]+/metadata\.json$])

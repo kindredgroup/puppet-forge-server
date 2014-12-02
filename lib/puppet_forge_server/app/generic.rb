@@ -14,6 +14,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module PuppetForgeServer
-    VERSION = '1.1.0'
+require 'sinatra/base'
+
+module PuppetForgeServer::App
+  class Generic < Sinatra::Base
+
+    configure do
+      enable :logging
+      use ::Rack::CommonLogger, PuppetForgeServer::Logger.get(:access)
+    end
+
+    before {
+      env['rack.errors'] =  PuppetForgeServer::Logger.get(:server)
+    }
+
+    def initialize
+      super(nil)
+    end
+
+    #
+    # Debug log the received call parameters and return the bogus access token
+    #
+    post '/oauth/token' do
+      PuppetForgeServer::Logger.get(:server).debug "Params: #{params}"
+      {'access_token' => 'BOGUS_ACCESS_TOKEN'}.to_json
+    end
+
+  end
 end

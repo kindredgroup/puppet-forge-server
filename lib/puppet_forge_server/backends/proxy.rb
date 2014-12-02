@@ -47,6 +47,11 @@ module PuppetForgeServer::Backends
       # ignore
     end
 
+    def upload(file_data)
+      PuppetForgeServer::Logger.get(:server).debug 'File upload is not supported by the proxy backends'
+      false
+    end
+
     protected
     def get(relative_url)
       @http_client.get(url(relative_url))
