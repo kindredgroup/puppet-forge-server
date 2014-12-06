@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = %w(lib)
 
   spec.add_dependency 'sinatra', '~> 1.4'
+  spec.add_dependency 'sinatra-contrib', '~> 1.4'
   spec.add_dependency 'json', '~> 1.8'
   spec.add_dependency 'rack-mount', '~> 0.8'
   spec.add_dependency 'open4', '~> 1.3'
@@ -42,6 +43,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'rake', '~> 10.3'
   spec.add_development_dependency 'rspec', '~> 3.1'
+  spec.add_development_dependency 'rspec-core', '~> 3.1'
 
   spec.required_ruby_version = '>= 1.9.3'
 end

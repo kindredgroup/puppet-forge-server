@@ -134,6 +134,10 @@ Puppet module *metadata* json representation is used as a main business *model*.
 1. Create UTs for core logic
 2. Implement *source* and *git* backends to match [puppet library](https://github.com/drrb/puppet-library) feature set
 
+## Limitations
+
+1. Modulefile is not supported with the *directory* backend
+
 ## License
 
 [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)

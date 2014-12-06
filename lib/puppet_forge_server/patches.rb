@@ -17,6 +17,18 @@
 
 require 'rubygems/package'
 
+module Gem
+  def Version.new(version)
+    super(version.to_s.gsub('-', '.pre.'))
+  rescue ArgumentError
+    if version =~ /^\d+(\.\d+)*/
+      super(version[/^\d+(\.\d+)*/])
+    else
+      super('0')
+    end
+  end
+end
+
 class Hash
   def deep_merge(other)
     merge(other) do |key, old_val, new_val|
@@ -42,8 +54,7 @@ class Array
 
   def version_sort_by
     sort_by do |element|
-      version = yield(element).gsub('-', '.pre.')
-      Gem::Version.new(version)
+      Gem::Version.new(yield(element))
     end
   end
 end

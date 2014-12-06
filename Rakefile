@@ -14,10 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-language: ruby
-rvm:
-  - 1.9.3
-  - 2.0.0
+require 'rspec/core/rake_task'
 
-script:
-  - bundle exec rake test:all
+RSpec::Core::RakeTask.new('test:integration') do |t|
+  t.verbose = true
+  t.pattern = 'spec/integration/*_spec.rb'
+end
+
+RSpec::Core::RakeTask.new('test:unit') do |t|
+  t.verbose = true
+  t.pattern = 'spec/unit/*_spec.rb'
+end
+
+RSpec::Core::RakeTask.new('test:all') do |t|
+  t.verbose = true
+  t.pattern = 'spec/**/*_spec.rb'
+end

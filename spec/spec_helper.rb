@@ -14,10 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-language: ruby
-rvm:
-  - 1.9.3
-  - 2.0.0
+require 'rack/test'
+require 'rspec'
+require 'puppet_forge_server'
 
-script:
-  - bundle exec rake test:all
+ENV['RACK_ENV'] = 'test'
+
+module RSpecMixin
+  include Rack::Test::Methods
+end
+
+RSpec.configure do |c|
+  c.include RSpecMixin
+  c.add_formatter(:documentation)
+end

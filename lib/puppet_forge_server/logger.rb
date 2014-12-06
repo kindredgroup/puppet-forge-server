@@ -23,8 +23,8 @@ module PuppetForgeServer
     @@DEFAULT_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
     @static_loggers = {:server => nil, :access => nil}
 
-    def initialize(destinations = [@@DEFAULT_LOGGER])
-      @loggers = Array.new(destinations).flatten.map do |dest|
+    def initialize(destinations = [@@DEFAULT_DESTINATION])
+      @loggers = [destinations].flatten.map do |dest|
         logger = ::Logger.new(dest)
         logger.formatter = proc do |severity, datetime, progname, msg|
           datetime = datetime.strftime @@DEFAULT_DATETIME_FORMAT
@@ -45,7 +45,7 @@ module PuppetForgeServer
     end
 
     def respond_to?(method_name, include_private = false)
-      @loggers.each { |logger| false unless logger.respond_to? method_name }
+      @loggers.each { |logger| return false unless (logger.respond_to?(method_name) || %w(write puts).include?(method_name.to_s)) }
     end
 
     class << self

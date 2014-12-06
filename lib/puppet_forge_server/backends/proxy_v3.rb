@@ -57,10 +57,15 @@ module PuppetForgeServer::Backends
       releases
     end
 
+    def normalize_metadata(metadata)
+      metadata['name'] = metadata['name'].gsub('/', '-')
+      metadata
+    end
+
     def get_release_metadata(releases)
       releases.map do |element|
         {
-            :metadata => PuppetForgeServer::Models::Metadata.new(element['metadata']),
+            :metadata => PuppetForgeServer::Models::Metadata.new(normalize_metadata(element['metadata'])),
             :checksum => element['file_md5'],
             :path => element['file_uri'],
             :tags => (element['tags'] + (element['metadata']['tags'] ? element['metadata']['tags'] : [])).flatten.uniq

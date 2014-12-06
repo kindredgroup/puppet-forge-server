@@ -15,6 +15,7 @@
 # limitations under the License.
 
 require 'sinatra/base'
+require 'sinatra/json'
 
 module PuppetForgeServer::App
   class Version3 < Sinatra::Base
@@ -27,34 +28,38 @@ module PuppetForgeServer::App
       use ::Rack::CommonLogger, PuppetForgeServer::Logger.get(:access)
     end
 
-    before {
-      env['rack.errors'] =  PuppetForgeServer::Logger.get(:server)
-    }
+    before do
+      content_type :json
+      env['rack.errors'] = PuppetForgeServer::Logger.get(:server)
+    end
 
     def initialize(backends)
       super(nil)
       @backends = backends
     end
 
-    get '/v3/releases' do
-      halt 400, {'error' => 'The number of version constraints in the query does not match the number of module names'}.to_json unless params[:module]
-
+    get '/v3/releases/:module' do
+      halt 404, json({:errors => ['404 Not found']}) unless params[:module]
       author, name, version = params[:module].split '-'
-      metadata = @backends.map do |backend|
-        backend.get_metadata(author, name, {:version => version})
-      end.flatten.compact.uniq
+      halt 400, json({:errors => ["'#{params[:module]}' is not a valid release slug"]}) unless author && name && version
+      releases = releases(author, name, version)
+      halt 404, json({:errors => ['404 Not found']}) unless releases
+      PuppetForgeServer::Logger.get(:server).error "Requested releases count is more than 1:\n#{releases}" unless releases.count > 1
+      json releases.first
+    end
 
-      halt 404, {'pagination' => {'next' => false}, 'results' => []}.to_json if metadata.empty?
-
-      releases = get_releases(metadata)
-      {'pagination' => {'next' => false, 'total' => releases.count}, 'results' => releases}.to_json
+    get '/v3/releases' do
+      halt 400, json({:error => 'The number of version constraints in the query does not match the number of module names'}) unless params[:module]
+      releases = releases(params[:module].split '-')
+      halt 404, json({:pagination => {:next => false}, :results => []}) unless releases
+      json :pagination => {:next => false, :total => releases.count}, :results => releases
     end
 
     get '/v3/files/*' do
       captures = params[:captures].first
       buffer = get_buffer(@backends, captures)
 
-      halt 404, {'errors' => ['404 Not found']}.to_json unless buffer
+      halt 404, json({:errors => ['404 Not found']}) unless buffer
 
       content_type 'application/octet-stream'
       attachment captures.split('/').last
@@ -65,15 +70,23 @@ module PuppetForgeServer::App
       author = params[:author]
       name = params[:name]
 
-      halt 400, {'errors' => "'#{params[:module]}' is not a valid module slug"}.to_json unless author && name
+      halt 400, json({:errors => "'#{params[:module]}' is not a valid module slug"}) unless author && name
 
       metadata = @backends.map do |backend|
         backend.get_metadata(author, name)
       end.flatten.compact.uniq
 
-      halt 404, {'errors' => ['404 Not found']}.to_json if metadata.empty?
+      halt 404, json({:errors => ['404 Not found']}) if metadata.empty?
 
-      get_modules(metadata).to_json
+      json get_modules(metadata)
+    end
+
+    private
+    def releases(author, name, version = nil)
+      metadata = @backends.map do |backend|
+        backend.get_metadata(author, name, {:version => version})
+      end.flatten.compact.uniq
+      metadata.empty? ? nil : get_releases(metadata)
     end
   end
 end

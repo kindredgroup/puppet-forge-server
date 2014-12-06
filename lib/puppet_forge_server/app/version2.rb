@@ -15,6 +15,7 @@
 # limitations under the License.
 
 require 'sinatra/base'
+require 'sinatra/json'
 
 module PuppetForgeServer::App
   class Version2 < Sinatra::Base
@@ -24,9 +25,9 @@ module PuppetForgeServer::App
       use ::Rack::CommonLogger, PuppetForgeServer::Logger.get(:access)
     end
 
-    before {
-      env['rack.errors'] =  PuppetForgeServer::Logger.get(:server)
-    }
+    before do
+      env['rack.errors'] = PuppetForgeServer::Logger.get(:server)
+    end
 
     def initialize(backends)
       super(nil)
@@ -34,7 +35,7 @@ module PuppetForgeServer::App
     end
 
     post '/v2/releases' do
-      halt 410, {'errors' => ['File not provided']}.to_json unless params['file']
+      halt 410, json({:errors => ['File not provided']}) unless params['file']
       states = @backends.map do |backend|
         backend.upload(params['file'])
       end.compact

@@ -14,10 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-language: ruby
-rvm:
-  - 1.9.3
-  - 2.0.0
+require 'spec_helper'
 
-script:
-  - bundle exec rake test:all
+module PuppetForgeServer
+  describe Server do
+    describe '#build' do
+      let(:server) { PuppetForgeServer::Server.new }
+      it 'builds rack routeset' do
+        routeset = server.build(nil)
+        expect(routeset.length).to eq 4
+      end
+    end
+  end
+end

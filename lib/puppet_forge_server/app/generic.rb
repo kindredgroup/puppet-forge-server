@@ -15,6 +15,7 @@
 # limitations under the License.
 
 require 'sinatra/base'
+require 'sinatra/json'
 
 module PuppetForgeServer::App
   class Generic < Sinatra::Base
@@ -24,9 +25,10 @@ module PuppetForgeServer::App
       use ::Rack::CommonLogger, PuppetForgeServer::Logger.get(:access)
     end
 
-    before {
+    before do
+      content_type :json
       env['rack.errors'] =  PuppetForgeServer::Logger.get(:server)
-    }
+    end
 
     def initialize
       super(nil)
@@ -37,7 +39,7 @@ module PuppetForgeServer::App
     #
     post '/oauth/token' do
       PuppetForgeServer::Logger.get(:server).debug "Params: #{params}"
-      {'access_token' => 'BOGUS_ACCESS_TOKEN'}.to_json
+      json :access_token => 'BOGUS_ACCESS_TOKEN'
     end
 
   end
