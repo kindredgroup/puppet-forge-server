@@ -41,7 +41,7 @@ module PuppetForgeServer::Api::V3
         end
       end
 
-      PuppetForgeServer::Logger.get.error "Requested module count is more than 1:\n#{modules.values}" unless modules.values.count > 1
+      PuppetForgeServer::Logger.get.error "Requested module count is more than 1:\n#{modules.values}" if modules.values.count > 1
       modules.values.first
     end
 

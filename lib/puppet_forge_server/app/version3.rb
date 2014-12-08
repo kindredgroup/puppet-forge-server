@@ -44,13 +44,14 @@ module PuppetForgeServer::App
       halt 400, json({:errors => ["'#{params[:module]}' is not a valid release slug"]}) unless author && name && version
       releases = releases(author, name, version)
       halt 404, json({:errors => ['404 Not found']}) unless releases
-      PuppetForgeServer::Logger.get(:server).error "Requested releases count is more than 1:\n#{releases}" unless releases.count > 1
+      PuppetForgeServer::Logger.get(:server).error "Requested releases count is more than 1:\n#{releases}" if releases.count > 1
       json releases.first
     end
 
     get '/v3/releases' do
       halt 400, json({:error => 'The number of version constraints in the query does not match the number of module names'}) unless params[:module]
-      releases = releases(params[:module].split '-')
+      author, name = params[:module].split '-'
+      releases = releases(author, name)
       halt 404, json({:pagination => {:next => false}, :results => []}) unless releases
       json :pagination => {:next => false, :total => releases.count}, :results => releases
     end
@@ -58,9 +59,7 @@ module PuppetForgeServer::App
     get '/v3/files/*' do
       captures = params[:captures].first
       buffer = get_buffer(@backends, captures)
-
       halt 404, json({:errors => ['404 Not found']}) unless buffer
-
       content_type 'application/octet-stream'
       attachment captures.split('/').last
       download buffer
@@ -69,15 +68,11 @@ module PuppetForgeServer::App
     get '/v3/modules/:author-:name' do
       author = params[:author]
       name = params[:name]
-
       halt 400, json({:errors => "'#{params[:module]}' is not a valid module slug"}) unless author && name
-
       metadata = @backends.map do |backend|
         backend.get_metadata(author, name)
       end.flatten.compact.uniq
-
       halt 404, json({:errors => ['404 Not found']}) if metadata.empty?
-
       json get_modules(metadata)
     end
 

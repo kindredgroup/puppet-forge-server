@@ -40,25 +40,19 @@ module PuppetForgeServer::App
 
     get '/api/v1/releases.json' do
       halt 400, json({:error => 'The number of version constraints in the query does not match the number of module names'}) unless params[:module]
-
       author, name = params[:module].split '/'
       version = params[:version] if params[:version]
-
       metadata = @backends.map do |backend|
         backend.get_metadata(author, name, {:version => version, :with_checksum => false})
       end.flatten.compact.uniq
-
       halt 400, json({:errors => ["'#{params[:module]}' is not a valid module slug"]}) if metadata.empty?
-
       json "#{author}/#{name}" => get_releases(metadata)
     end
 
     get '/api/v1/files/*' do
       captures = params[:captures].first
       buffer = get_buffer(@backends, captures)
-
       halt 404, json({:errors => ['404 Not found']}) unless buffer
-
       content_type 'application/octet-stream'
       attachment captures.split('/').last
       download buffer
