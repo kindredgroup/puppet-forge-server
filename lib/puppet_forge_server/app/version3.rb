@@ -73,7 +73,23 @@ module PuppetForgeServer::App
         backend.get_metadata(author, name)
       end.flatten.compact.uniq
       halt 404, json({:errors => ['404 Not found']}) if metadata.empty?
-      json get_modules(metadata)
+      PuppetForgeServer::Logger.get(:server).error "Requested module count is more than 1:\n#{metadata}" if metadata.count > 1
+      json get_modules(metadata).first
+    end
+
+    get '/v3/modules' do
+      query = params[:query]
+      metadata = @backends.map do |backend|
+        backend.query_metadata(query)
+      end.flatten.compact.uniq
+      modules = metadata.empty? ? nil : get_modules(metadata)
+      halt 200, json({:pagination => {:next => false}, :results => []}) unless modules
+      json :pagination => {:next => false, :total => modules.count}, :results => modules
+    end
+
+    get '/v3/users/:author' do
+      author = params[:author]
+      json :username => author, :uri => "/v3/users/#{author}"
     end
 
     private

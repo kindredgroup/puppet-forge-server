@@ -30,19 +30,19 @@ module PuppetForgeServer::Api::V3
           modules[element[:metadata].name][:releases] = (modules[element[:metadata].name][:releases] + releases_version(element[:metadata])).version_sort_by { |r| r[:version] }.reverse
         else
           name = element[:metadata].name.sub(/^[^-]+-/, '')
+          author = element[:metadata].name.split('-')[0]
           modules[element[:metadata].name] = {
               :uri => "/v3/modules/#{element[:metadata].name}",
               :name => name,
               :homepage_url => element[:metadata].project_page,
               :issues_url => element[:metadata].issues_url,
               :releases => releases_version(element[:metadata]),
-              :current_release => get_releases([element]).first
+              :current_release => get_releases([element]).first,
+              :owner => {:username => author, :uri => "/v3/users/#{author}"}
           }
         end
       end
-
-      PuppetForgeServer::Logger.get.error "Requested module count is more than 1:\n#{modules.values}" if modules.values.count > 1
-      modules.values.first
+      modules.values
     end
 
     private

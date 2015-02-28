@@ -27,10 +27,9 @@ module PuppetForgeServer::Backends
     end
 
     def get_metadata(author, name, options = {})
-      options = ({:with_checksum => true}).merge(options)
       query ="#{author}-#{name}"
       begin
-        releases = options[:version] ? [JSON.parse(get("/v3/releases/#{query}-#{options[:version]}"))] : get_all_release_pages("/v3/releases?module=#{query}")
+        releases = options[:version] ? [JSON.parse(get("/v3/releases/#{query}-#{options[:version]}"))] : get_all_result_pages("/v3/releases?module=#{query}")
         get_release_metadata(releases)
       rescue OpenURI::HTTPError
         #ignore
@@ -38,16 +37,16 @@ module PuppetForgeServer::Backends
     end
 
     def query_metadata(query, options = {})
-      author, name = query.split('-')
       begin
-        get_metadata(author, name, options) if author && name
+        releases = get_current_release_metadata(get_all_result_pages("/v3/modules?query=#{query}"))
+        get_release_metadata(releases)
       rescue OpenURI::HTTPError
         #ignore
       end
     end
 
     private
-    def get_all_release_pages(next_page)
+    def get_all_result_pages(next_page)
       releases = []
       begin
         result = JSON.parse(get(next_page))
@@ -70,6 +69,12 @@ module PuppetForgeServer::Backends
             :path => element['file_uri'],
             :tags => (element['tags'] + (element['metadata']['tags'] ? element['metadata']['tags'] : [])).flatten.uniq
         }
+      end
+    end
+
+    def get_current_release_metadata(modules)
+      modules.map do |element|
+        element['current_release']
       end
     end
   end
