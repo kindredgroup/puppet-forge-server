@@ -38,7 +38,7 @@ module PuppetForgeServer::Backends
 
     def query_metadata(query, options = {})
       begin
-        releases = get_current_release_metadata(get_all_result_pages("/v3/modules?query=#{query}"))
+        releases = get_all_result_pages("/v3/modules?query=#{query}").map {|element| element['current_release']}
         get_release_metadata(releases)
       rescue OpenURI::HTTPError
         #ignore
@@ -47,13 +47,13 @@ module PuppetForgeServer::Backends
 
     private
     def get_all_result_pages(next_page)
-      releases = []
+      results = []
       begin
-        result = JSON.parse(get(next_page))
-        releases += result['results']
-        next_page = result['pagination']['next']
+        current_page = JSON.parse(get(next_page))
+        results += current_page['results']
+        next_page = current_page['pagination']['next']
       end while next_page
-      releases
+      results
     end
 
     def normalize_metadata(metadata)
@@ -69,12 +69,6 @@ module PuppetForgeServer::Backends
             :path => element['file_uri'],
             :tags => (element['tags'] + (element['metadata']['tags'] ? element['metadata']['tags'] : [])).flatten.uniq
         }
-      end
-    end
-
-    def get_current_release_metadata(modules)
-      modules.map do |element|
-        element['current_release']
       end
     end
   end
