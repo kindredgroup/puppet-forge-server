@@ -34,6 +34,7 @@ module PuppetForgeServer
   end
 
   module App
+    autoload :Frontend, 'puppet_forge_server/app/frontend'
     autoload :Generic, 'puppet_forge_server/app/generic'
     autoload :Version1, 'puppet_forge_server/app/version1'
     autoload :Version2, 'puppet_forge_server/app/version2'

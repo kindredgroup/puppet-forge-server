@@ -1,0 +1,289 @@
+-# -*- encoding: utf-8 -*-
+-#
+-# Copyright 2014 North Development AB
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-# http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+!!!
+%html
+  %head
+    %meta{ :charset => 'utf-8' }
+    %title Internal Puppet Forge
+    -# Latest compiled and minified CSS
+    %link{ :href => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css', :type => 'text/css', :rel => 'stylesheet' }
+    -#%link{ :href => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css', :type => 'text/css', :rel => 'stylesheet' }
+    /[if lt IE 9]
+      %script{:src => 'https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'}
+      %script{:src => 'https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js'}
+  %style
+    :plain
+      body {
+        background: #fff;
+        color: #5d5e59;
+        font: "PT Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        line-height: 1.4;
+        padding-top: 40px;
+      }
+      /* navbar */
+      .navbar {
+        max-height:40px;
+        min-height:40px;
+        margin: 0px;
+        padding: 0px;
+       }
+      .navbar-default {
+        background-color: #302C6D;
+        border: none;
+        font-family: 'PT Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 100%;
+        line-height: 20px;
+      }
+      /* link */
+      .navbar-default .navbar-nav > li > a {
+        color: #fff;
+        line-height: 20px;
+        padding: 10px;
+      }
+      .navbar-default .navbar-nav > li > a:hover,
+      .navbar-default .navbar-nav > li > a:focus {
+        color: #fff;
+        text-decoration: underline;
+      }
+      .navbar-default .navbar-nav > .active > a,
+      .navbar-default .navbar-nav > .active > a:hover,
+      .navbar-default .navbar-nav > .active > a:focus {
+        color: #fff;
+        background-color: #302C6D;
+      }
+      .navbar-default .navbar-nav > .open > a,
+      .navbar-default .navbar-nav > .open > a:hover,
+      .navbar-default .navbar-nav > .open > a:focus {
+        color: #fff;
+        background-color: #302C6D;
+      }
+      /* mobile version */
+      .navbar-default .navbar-toggle {
+        border: none;
+      }
+      .navbar-default .navbar-toggle:hover,
+      .navbar-default .navbar-toggle:focus {
+        background-color: #302C6D;
+      }
+      .navbar-default .navbar-toggle .icon-bar {
+        background-color: #302C6D;
+      }
+      @media (max-width: 767px) {
+        .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+          color: #fff;
+        }
+        .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+        .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+          color: #fff;
+          text-decoration: underline;
+        }
+      }
+      .section {
+        padding-right: 5%;
+        padding-left: 5%;
+        width: 90%;
+        display: block;
+        border: 0;
+        outline: 0;
+        font-weight: inherit;
+        font-style: inherit;
+        font-size: 100%;
+        font-family: inherit;
+        vertical-align: baseline;
+      }
+      .section#header {
+        width: 100%;
+        z-index: 2;
+        position: relative;
+        margin: 0 auto;
+        background: #F7F6F4;
+        height: 95px;
+        border-bottom: 2px solid #c4c4c5;
+        box-shadow: rgba(0, 0, 0, 0.15) 0 0 20px;
+      }
+      .section#header #logo {
+        float: left;
+        width: 20%;
+      }
+      .section#header .logo {
+        position: relative;
+        top: 15px;
+        left: 5px;
+      }
+      .section .site-width {
+        width: 90%;
+        max-width: 1300px;
+        min-width: 940px;
+        margin: 0 auto;
+        position: relative;
+      }
+      .section#header .top-search {
+        float: left;
+        box-sizing: border-box;
+        padding-left: 10%;
+        width: 54%;
+        padding-top: 1.5em;
+      }
+      .clearfix {
+        display: block;
+      }
+      input[type=search] {
+        width: 80%;
+        max-width: 650px;
+        padding: 0.5em;
+      }
+      input[type="submit"],
+      textarea[type="submit"] {
+        background: #76c642;
+        color: #fff;
+        white-space: nowrap;
+        border: 0;
+        display: inline-block;
+        padding: 0.5em 1em 0.5em;
+        margin-right: 1em;
+      }
+      input[type="submit"].search-btn,
+      textarea[type="submit"].search-btn {
+        padding: 0.5em;
+        margin-right: 0em;
+      }
+      input[type="submit"]:hover,
+      textarea[type="submit"]:hover {
+        color: #fff;
+        text-decoration: none;
+        cursor: pointer;
+        background: #92d269;
+      }
+      input, textarea {
+        cursor: auto;
+        height: 40px;
+        border: 1px solid #CCC;
+        color: #777;
+        margin: 0em;
+        font-family: 'Lucida Grande';
+        font-size: 16px;
+        text-rendering: auto;
+        letter-spacing: normal;
+        word-spacing: normal;
+        text-transform: none;
+        text-indent: 0px;
+        text-shadow: none;
+        display: inline-block;
+        text-align: start;
+      }
+      section#content {
+        padding-top: 2em;
+        padding-bottom: 4em;
+        background: white;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: Arvo, 'PT Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: #6c6d6d;
+        font-weight: normal;
+        line-height: 1.15em;
+        margin: 1em 0px 0.25em;
+      }
+      h1 {
+        font-size: 36px;
+      }
+      h3.search-results-title {
+        float: left;
+        width: 55%;
+      }
+      .list-container {
+        float: right;
+        width: 73%;
+      }
+      .list {
+        list-style-type: none;
+        margin-left: 0;
+      }
+      .list > li {
+        position: relative;
+        min-height: 87px;
+        padding: 1em 0;
+        margin: 0;
+        border-bottom: solid 1px #cccccc;
+      }
+      ul, ol, dl {
+        margin-bottom: 1.5em;
+        margin-left: 0;
+        list-style-position: inside;
+      }
+      ol, ul {
+        list-style: none;
+      }
+      li {
+        line-height: 1.5em;
+        margin-bottom: 0.5em;
+      }
+      .list.modules .col {
+        width: 90%;
+      }
+      .list.modules .col {
+        float: left;
+        box-sizing: border-box;
+      }
+
+
+      .list.modules .col h3 {
+        margin: 0.25em 0 0.25em 0;
+      }
+
+      .list.modules .summary {
+        padding-right: 40px;
+      }
+      p.release-info {
+        font-size: 0.9em;
+        color: #6c6d6d;
+      }
+      p {
+        margin: 0;
+      }
+
+  %body
+    .navbar.navbar-default.navbar-fixed-top{ :role => 'navigation' }
+      .container
+        .navbar-header
+          %button.navbar-toggle{ :type => 'button', 'data-toggle' => 'collapse', 'data-target' => '.navbar-collapse'}
+            %span.sr-only Toggle Navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+        .collapse.navbar-collapse
+          %ul.nav.navbar-nav.navbar-right
+            %li.active
+              %a{:href => 'https://forge.puppetlabs.com/', :target => 'official-puppet-forge'} Official Puppet Forge
+            %li
+              %a{:href => 'https://github.com/unibet/puppet-forge-server', :target => 'puppet-forge-server-github'} Help
+    %script{ :src => 'https://code.jquery.com/jquery-2.1.3.min.js' }
+    .section#header
+      .side-width.clearfix
+        #logo
+          %a{:href => '/'}
+            %img.logo{ :src => 'https://forge.puppetlabs.com/assets/591fc16/images/forge-logo.png', :width => 200}
+        .top-search
+          %form{:action => '/modules', :method=>'get'}
+            %input{ :type => 'search', :name=>'query', :placeholder=>'Search from 3,209 modules', :autofocus=>''}
+            %input.search-btn{ :type=>'submit', :value=>'Find'}
+    .section#content
+      .side-width.clearfix
+        = yield
+    %script{ :src => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js' }
