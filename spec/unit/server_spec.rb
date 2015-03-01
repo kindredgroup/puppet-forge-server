@@ -22,7 +22,7 @@ module PuppetForgeServer
       let(:server) { PuppetForgeServer::Server.new }
       it 'builds rack routeset' do
         routeset = server.build(nil)
-        expect(routeset.length).to eq 4
+        expect(routeset.length).to eq 5
       end
     end
   end
