@@ -8,6 +8,26 @@ Private Puppet Forge Server supporting local files and both v1 and v3 API proxie
 Puppet Forge Server provides approximated implementation of both [v1](https://projects.puppetlabs.com/projects/module-site/wiki/Server-api)
 and [v3](https://forgeapi.puppetlabs.com/) APIs, but behavioral deviations from the official implementation might occur.
 
+## Table of Contents
+
+* [Installation](#installation)
+* [Getting Started](#getting-started)
+  * [Proxy](#proxy)
+    * [Proxy the official Puppet Forge v3 API](#proxy-the-official-puppet-forge-v3-api)
+    * [Proxy the official Puppet Forge v1 API and local Pulp puppet repository](#proxy-the-official-puppet-forge-v1-api-and-local-pulp-puppet-repository)
+  * [Locally stored modules](#locally-stored-modules)
+  * [All-in](#all-in)
+  * [Daemon](#daemon)
+* [Web UI](#web-ui)
+* [Architecture](#command-reference)
+  * [API (view)](#api-view)
+  * [App (controller)](#app-controller)
+  * [Models](#models)
+  * [Backends](#backends)
+* [TODO](#todo)
+* [Limitations](#limitations)
+* [Reference](#reference)
+
 ## Installation
 
 Install the gem
@@ -106,6 +126,12 @@ sudo -u forge puppet-forge-server -D -m /opt/forge/modules -x https://forgeapi.p
 ```
 
 You are done. Now go install some puppet modules.
+
+## Web UI
+
+Puppet forge server comes with built-in web UI looking very similar to the official puppet forge web page and providing a simple module search feature. Each view haml file corresponds to the request endpoint; for example **/** or index  is formed by the index.haml located in the *views* directory and obviously combined with layout.haml that is being refered to during any request. 
+
+It is possible to set an external web UI root directory containing at least *views* directory with required haml files. See https://github.com/unibet/puppet-forge-server/tree/draft1.4.0/lib/puppet_forge_server/app/views for built-in reference implementation.
 
 ## Architecture
 
