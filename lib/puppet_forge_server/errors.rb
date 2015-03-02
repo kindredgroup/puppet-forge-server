@@ -15,6 +15,6 @@
 # limitations under the License.
 
 module PuppetForgeServer::Errors
-  class Expected
+  class Expected < StandardError
   end
 end

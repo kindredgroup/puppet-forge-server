@@ -22,14 +22,16 @@ module PuppetForgeServer
     include PuppetForgeServer::Utils::Http
 
     def go(args)
+      # Initial logger in case error occurs before logging options have been processed
+      @log = PuppetForgeServer::Logger.get
       begin
         options = parse_options(args)
         @log = logging(options)
         backends = backends(options)
-        server = build(backends)
+        server = build(backends, options[:webui_root])
         announce(options, backends)
         start(server, options)
-      rescue PuppetForgeServer::Errors::Expected
+      rescue PuppetForgeServer::Errors::Expected => error
         @log.error error
       end
     end
@@ -46,8 +48,9 @@ module PuppetForgeServer
       PuppetForgeServer::Logger.get
     end
 
-    def build(backends)
+    def build(backends, webui_root)
       Rack::Mount::RouteSet.new do |set|
+        set.add_route PuppetForgeServer::App::Frontend.new(webui_root)
         set.add_route PuppetForgeServer::App::Generic.new
         set.add_route PuppetForgeServer::App::Version1.new(backends)
         set.add_route PuppetForgeServer::App::Version2.new(backends)
