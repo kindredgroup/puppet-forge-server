@@ -20,7 +20,6 @@ require 'json'
 
 module PuppetForgeServer::App
   class Frontend < Sinatra::Base
-    include PuppetForgeServer::Api::V3::Modules
 
     configure do
       set :haml, :format => :html5
@@ -32,8 +31,9 @@ module PuppetForgeServer::App
       env['rack.errors'] =  PuppetForgeServer::Logger.get(:server)
     end
 
-    def initialize(http_client = PuppetForgeServer::Http::HttpClient.new)
+    def initialize(root, http_client = PuppetForgeServer::Http::HttpClient.new)
       super(nil)
+      settings.root = root
       @http_client = http_client
     end
 
@@ -43,13 +43,17 @@ module PuppetForgeServer::App
 
     get '/modules' do
       query = params[:query]
-      modules = JSON.parse(get("#{request.base_url}/v3/modules?query=#{query}"))['results']
+      modules = get("#{request.base_url}/v3/modules?query=#{query}")['results']
       haml :modules, :locals => {:query => query, :modules => modules}
     end
 
     private
     def get(relative_url)
-      @http_client.get(relative_url)
+      begin
+        JSON.parse(@http_client.get(relative_url))
+      rescue
+        {'results' => []}
+      end
     end
   end
 end

@@ -27,9 +27,10 @@ module PuppetForgeServer::Utils
     @@DEFAULT_PID_FILE = File.join(Dir.tmpdir.to_s, 'puppet-forge-server', 'server.pid')
     @@DEFAULT_CACHE_DIR = File.join(Dir.tmpdir.to_s, 'puppet-forge-server', 'cache')
     @@DEFAULT_LOG_DIR = File.join(Dir.tmpdir.to_s, 'puppet-forge-server', 'log')
+    @@DEFAULT_WEBUI_ROOT = File.expand_path('../app', File.dirname(__FILE__))
 
     def parse_options(args)
-      options = {:daemonize => @@DEFAULT_DAEMONIZE, :cache_basedir => @@DEFAULT_CACHE_DIR, :port => @@DEFAULT_PORT}
+      options = {:daemonize => @@DEFAULT_DAEMONIZE, :cache_basedir => @@DEFAULT_CACHE_DIR, :port => @@DEFAULT_PORT, :webui_root => @@DEFAULT_WEBUI_ROOT}
       option_parser = ::OptionParser.new do |opts|
         opts.banner = "Usage: #{File.basename $0} [options]"
         opts.version = PuppetForgeServer::VERSION
@@ -66,6 +67,10 @@ module PuppetForgeServer::Utils
           options[:log_dir] = log_dir
         end
 
+        opts.on('--webui-root DIR', "Directory containing views and other public files used for web UI: #{@@DEFAULT_WEBUI_ROOT})") do |webui_root|
+          options[:webui_root] = webui_root
+        end
+
         opts.on('--debug', 'Log everything into STDERR') do
           options[:debug] = true
         end
@@ -75,6 +80,8 @@ module PuppetForgeServer::Utils
       rescue ::OptionParser::InvalidOption => parse_error
         raise PuppetForgeServer::Errors::Expected, parse_error.message + "\n" + option_parser.help
       end
+
+      raise PuppetForgeServer::Errors::Expected, "Web UI directory doesn't exist: #{options[:webui_root]}" unless Dir.exists?(options[:webui_root])
 
       # Handle option dependencies
       if options[:daemonize]
