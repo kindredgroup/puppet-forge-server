@@ -131,7 +131,7 @@ You are done. Now go install some puppet modules.
 
 Puppet forge server comes with built-in web UI looking very similar to the official puppet forge web page and providing a simple module search feature. Each view haml file corresponds to the request endpoint; for example **/** or index  is formed by the index.haml located in the *views* directory and obviously combined with layout.haml that is being refered to during any request. 
 
-It is possible to set an external web UI root directory containing at least *views* directory with required haml files. See https://github.com/unibet/puppet-forge-server/tree/draft1.4.0/lib/puppet_forge_server/app/views for built-in reference implementation.
+It is possible to set an external web UI root directory containing at least *views* directory with required haml files. See https://github.com/unibet/puppet-forge-server/tree/master/lib/puppet_forge_server/app/views for built-in reference implementation.
 
 ## Architecture
 
