@@ -106,7 +106,7 @@ body {
 }
 .section#header #logo {
   float: left;
-  width: 20%;
+  width: 210px;
 }
 .section#header #logo a {
   text-decoration: none;
