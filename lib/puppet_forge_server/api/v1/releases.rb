@@ -25,7 +25,7 @@ module PuppetForgeServer::Api::V1
               [dependency['name'], dependency['version_requirement']]
             end
         }
-      end.version_sort_by { |r| r[:version] }.reverse
+      end.version_sort_by { |r| r[:version] }
     end
   end
 end
