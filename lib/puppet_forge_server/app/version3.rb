@@ -52,7 +52,7 @@ module PuppetForgeServer::App
       halt 400, json({:error => 'The number of version constraints in the query does not match the number of module names'}) unless params[:module]
       author, name = params[:module].split '-'
       releases = releases(author, name)
-      halt 404, json({:pagination => {:next => false}, :results => []}) unless releases
+      halt 200, json({:pagination => {:next => false}, :results => []}) unless releases
       json :pagination => {:next => false, :total => releases.count}, :results => releases
     end
 
