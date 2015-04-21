@@ -38,6 +38,8 @@ module PuppetForgeServer
       method_name = case method_name
                       when :write, :puts
                         '<<'
+                      when :flush
+                        ''
                       else
                         method_name
                     end
@@ -45,7 +47,11 @@ module PuppetForgeServer
     end
 
     def respond_to?(method_name, include_private = false)
-      @loggers.each { |logger| return false unless (logger.respond_to?(method_name) || %w(write puts).include?(method_name.to_s)) }
+      @loggers.each { |logger| return false unless (logger.respond_to?(method_name) || %w(write puts flush).include?(method_name.to_s)) }
+    end
+
+    def flush
+      # ignore
     end
 
     class << self

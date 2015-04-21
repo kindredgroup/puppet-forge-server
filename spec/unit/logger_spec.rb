@@ -70,6 +70,12 @@ module PuppetForgeServer
       end
     end
 
+    describe '#flush' do
+      it 'should respond to flush' do
+        expect(logger).to respond_to('flush')
+      end
+    end
+
     describe '#non_existing' do
       it 'should fail on non existing method' do
         expect { logger.non_existing }.to raise_error(NoMethodError)
