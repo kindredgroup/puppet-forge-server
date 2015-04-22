@@ -44,7 +44,9 @@ module PuppetForgeServer::Backends
     end
 
     def upload(file_data)
-      File.open(File.join(@module_dir, file_data[:filename]), 'w') do |f|
+      filename = File.join(@module_dir, file_data[:filename])
+      return false if File.exist?(filename)
+      File.open(filename, 'w') do |f|
         f.write(file_data[:tempfile].read)
       end
       true

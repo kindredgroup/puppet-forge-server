@@ -24,11 +24,13 @@ module PuppetForgeServer::Backends
     let(:version) { 'bogus_version' }
     let(:directory) { PuppetForgeServer::Backends::Directory.new(url) }
     let(:file_metadata) { { :metadata => nil, :checksum => nil, :path => nil} }
+    let(:file_data) { { :filename => 'bogus_filename' } }
 
     before(:each) do
       allow(directory).to receive(:get_file_metadata).with("*#{name}*.tar.gz", {}) { file_metadata }
       allow(directory).to receive(:get_file_metadata).with("#{author}-#{name}-*.tar.gz", {}) { file_metadata }
       allow(directory).to receive(:get_file_metadata).with("#{author}-#{name}-#{version}.tar.gz", {:version => version}) { file_metadata }
+      allow(File).to receive(:open).with("#{url}/#{file_data[:filename]}", 'w')
     end
 
     describe '#query_metadata' do
@@ -44,6 +46,18 @@ module PuppetForgeServer::Backends
 
       it 'get_metadata with version should return file metadata array' do
         expect(directory.get_metadata(author, name, {:version => version})).to eq(file_metadata)
+      end
+    end
+
+    describe '#upload' do
+      it 'upload when file does not exist should return true' do
+        allow(File).to receive(:exist?).with("#{url}/#{file_data[:filename]}") { false }
+        expect(directory.upload(file_data)).to be
+      end
+
+      it 'upload when file exists should return false' do
+        allow(File).to receive(:exist?).with("#{url}/#{file_data[:filename]}") { true }
+        expect(directory.upload(file_data)).not_to be
       end
     end
   end
