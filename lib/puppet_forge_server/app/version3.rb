@@ -44,8 +44,7 @@ module PuppetForgeServer::App
       halt 400, json({:errors => ["'#{params[:module]}' is not a valid release slug"]}) unless author && name && version
       releases = releases(author, name, version)
       halt 404, json({:errors => ['404 Not found']}) unless releases
-      PuppetForgeServer::Logger.get(:server).error "Requested releases count is more than 1:\n#{releases}" if releases.count > 1
-      json releases.first
+      json releases.last
     end
 
     get '/v3/releases' do
@@ -73,8 +72,12 @@ module PuppetForgeServer::App
         backend.get_metadata(author, name)
       end.flatten.compact.uniq
       halt 404, json({:errors => ['404 Not found']}) if metadata.empty?
-      PuppetForgeServer::Logger.get(:server).error "Requested module count is more than 1:\n#{metadata}" if metadata.count > 1
-      json get_modules(metadata).first
+      modules = get_modules(metadata)
+      if modules.count > 1
+        PuppetForgeServer::Logger.get(:server).warn "There were more than oen module found for '#{author}-#{name}'"
+        PuppetForgeServer::Logger.get(:server).debug(modules.to_s)
+      end
+      json modules.first
     end
 
     get '/v3/modules' do

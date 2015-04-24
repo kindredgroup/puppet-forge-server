@@ -19,6 +19,7 @@ require 'logger'
 
 module PuppetForgeServer
   class Logger
+    @@DEFAULT_LOG_LEVEL = ::Logger::INFO
     @@DEFAULT_DESTINATION = STDERR
     @@DEFAULT_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
     @static_loggers = {:server => nil, :access => nil}
@@ -30,6 +31,7 @@ module PuppetForgeServer
           datetime = datetime.strftime @@DEFAULT_DATETIME_FORMAT
           "[#{datetime}] #{severity}  #{msg}\n"
         end
+        logger.level = @@DEFAULT_LOG_LEVEL
         logger
       end
     end

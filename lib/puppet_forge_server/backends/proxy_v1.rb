@@ -33,8 +33,10 @@ module PuppetForgeServer::Backends
       query ="#{author}/#{name}"
       begin
         get_module_metadata(JSON.parse(get("/modules.json?q=#{query}")).select { |e| e['full_name'].match("#{query}") }, options)
-      rescue OpenURI::HTTPError
-        #ignore
+      rescue => e
+        @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
+        @log.debug("Error: #{e}")
+        nil
       end
     end
 
@@ -42,8 +44,10 @@ module PuppetForgeServer::Backends
       options = ({:with_checksum => true}).merge(options)
       begin
         get_module_metadata(JSON.parse(get("/modules.json?q=#{query}")).select { |e| e['full_name'].match("*#{query}*") }, options)
-      rescue OpenURI::HTTPError
-        #ignore
+      rescue => e
+        @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
+        @log.debug("Error: #{e}")
+        nil
       end
     end
 

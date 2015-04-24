@@ -31,8 +31,10 @@ module PuppetForgeServer::Backends
       begin
         releases = options[:version] ? [JSON.parse(get("/v3/releases/#{query}-#{options[:version]}"))] : get_all_result_pages("/v3/releases?module=#{query}")
         get_release_metadata(releases)
-      rescue OpenURI::HTTPError
-        #ignore
+      rescue => e
+        @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
+        @log.debug("Error: #{e}")
+        nil
       end
     end
 
@@ -40,8 +42,10 @@ module PuppetForgeServer::Backends
       begin
         releases = get_all_result_pages("/v3/modules?query=#{query}").map {|element| element['current_release']}
         get_release_metadata(releases)
-      rescue OpenURI::HTTPError
-        #ignore
+      rescue => e
+        @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
+        @log.debug("Error: #{e}")
+        nil
       end
     end
 

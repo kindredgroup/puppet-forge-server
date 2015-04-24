@@ -24,6 +24,7 @@ module PuppetForgeServer::Backends
       @url = url
       @cache_dir = File.join(cache_dir, Digest::SHA1.hexdigest(@url))
       @http_client = http_client
+      @log = PuppetForgeServer::Logger.get
 
       # Create directory structure for all alphabetic letters
       (10...36).each do |i|
@@ -43,16 +44,20 @@ module PuppetForgeServer::Backends
         path = File.join(@cache_dir, file_name[0], file_name)
       end
       File.open(path, 'rb')
-    rescue OpenURI::HTTPError
-      # ignore
+    rescue => e
+      @log.error("#{self.class.name} failed downloading file '#{relative_path}'")
+      @log.error("Error: #{e}")
+      nil
     end
 
     def upload(file_data)
-      PuppetForgeServer::Logger.get(:server).debug 'File upload is not supported by the proxy backends'
+      @log.debug 'File upload is not supported by the proxy backends'
       false
     end
 
     protected
+    attr_reader :log
+
     def get(relative_url)
       @http_client.get(url(relative_url))
     end

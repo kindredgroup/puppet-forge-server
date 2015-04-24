@@ -40,10 +40,16 @@ module PuppetForgeServer
       if options[:log_dir]
         FileUtils.mkdir_p options[:log_dir]
         server_loggers = [File.join(options[:log_dir], 'server.log')]
-        server_loggers << STDERR if options[:debug]
         access_loggers = [File.join(options[:log_dir], 'access.log')]
-        access_loggers << STDERR if options[:debug]
+        if options[:debug]
+          server_loggers << STDERR
+          access_loggers << STDERR
+        end
         PuppetForgeServer::Logger.set({:server => server_loggers, :access => access_loggers})
+      end
+      if options[:debug]
+        PuppetForgeServer::Logger.get(:server).level = ::Logger::DEBUG
+        PuppetForgeServer::Logger.get(:access).level = ::Logger::DEBUG
       end
       PuppetForgeServer::Logger.get
     end

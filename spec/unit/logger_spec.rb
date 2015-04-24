@@ -48,6 +48,7 @@ module PuppetForgeServer
 
     describe '#debug' do
       it 'should log message on level debug' do
+        logger.level = ::Logger::DEBUG
         expect(logger).to respond_to(:debug)
         logger.debug msg
         expect(test_io.string).to include("DEBUG  #{msg}")
