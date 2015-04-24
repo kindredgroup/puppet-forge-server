@@ -26,10 +26,17 @@ module PuppetForgeServer::Models
       PuppetForge::Logger.get.error "Method #{method_name} with args #{args} not found in #{self.class.to_s}" unless method_name == :to_ary
     end
 
-    def to_hash
+    def to_hash(obj = self)
       hash = {}
-      self.instance_variables.each do |var|
-        hash[var.to_s.delete('@')] = self.instance_variable_get var
+      obj.instance_variables.each do |var|
+        var_value = obj.instance_variable_get(var)
+        hash[var.to_s.delete('@')] = if var_value.kind_of?(Array)
+          var_value.map {|v| to_hash(v)}
+        elsif var_value.respond_to?(:to_hash)
+         var_value.to_hash
+        else
+          var_value
+        end
       end
       hash
     end
