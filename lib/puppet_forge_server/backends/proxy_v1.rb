@@ -36,7 +36,7 @@ module PuppetForgeServer::Backends
       rescue => e
         @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
         @log.debug("Error: #{e}")
-        nil
+        return nil
       end
     end
 
@@ -47,7 +47,7 @@ module PuppetForgeServer::Backends
       rescue => e
         @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
         @log.debug("Error: #{e}")
-        nil
+        return nil
       end
     end
 
@@ -62,6 +62,13 @@ module PuppetForgeServer::Backends
       element
     end
 
+    def parse_dependencies(metadata)
+      metadata.dependencies = metadata.dependencies.dup.map do |dependency|
+        PuppetForgeServer::Models::Dependency.new({:name => dependency[0], :version_requirement => dependency.length > 1 ? dependency[1] : nil})
+      end.flatten
+      metadata
+    end
+
     def get_module_metadata(modules, options)
       modules.map do |element|
         version = options['version'] ? "&version=#{options['version']}" : ''
@@ -69,7 +76,7 @@ module PuppetForgeServer::Backends
           tags = element['tag_list'] ? element['tag_list'] : nil
           raw_metadata = read_metadata(element, release)
           {
-              :metadata => PuppetForgeServer::Models::Metadata.new(raw_metadata),
+              :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(raw_metadata)),
               :checksum => options[:with_checksum] ? Digest::MD5.hexdigest(File.read(get_file_buffer(release['file']))) : nil,
               :path => "#{release['file']}",
               :tags => tags

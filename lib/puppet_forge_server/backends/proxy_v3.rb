@@ -65,10 +65,17 @@ module PuppetForgeServer::Backends
       metadata
     end
 
+    def parse_dependencies(metadata)
+      metadata.dependencies = metadata.dependencies.dup.map do |dependency|
+        PuppetForgeServer::Models::Dependency.new({:name => dependency['name'], :version_requirement => dependency['version_requirement']})
+      end.flatten
+      metadata
+    end
+
     def get_release_metadata(releases)
       releases.map do |element|
         {
-            :metadata => PuppetForgeServer::Models::Metadata.new(normalize_metadata(element['metadata'])),
+            :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(normalize_metadata(element['metadata']))),
             :checksum => element['file_md5'],
             :path => element['file_uri'],
             :tags => (element['tags'] + (element['metadata']['tags'] ? element['metadata']['tags'] : [])).flatten.uniq

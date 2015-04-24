@@ -21,9 +21,7 @@ module PuppetForgeServer::Api::V1
         {
             :file => "/api/v1/files#{element[:path]}",
             :version => element[:metadata].version,
-            :dependencies => element[:metadata].dependencies.map do |dependency|
-              [dependency['name'], dependency['version_requirement']]
-            end
+            :dependencies => element[:metadata].dependencies.map {|dep| [dep.name, dep.version_requirement]}
         }
       end.version_sort_by { |r| r[:version] }
     end

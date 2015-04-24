@@ -47,7 +47,7 @@ module PuppetForgeServer::Backends
     rescue => e
       @log.error("#{self.class.name} failed downloading file '#{relative_path}'")
       @log.error("Error: #{e}")
-      nil
+      return nil
     end
 
     def upload(file_data)
