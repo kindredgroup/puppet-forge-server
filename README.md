@@ -8,6 +8,8 @@ Private Puppet Forge Server supporting local files and both v1 and v3 API proxie
 Puppet Forge Server provides approximated implementation of both [v1](https://projects.puppetlabs.com/projects/module-site/wiki/Server-api)
 and [v3](https://forgeapi.puppetlabs.com/) APIs, but behavioral deviations from the official implementation might occur.
 
+Puppet 2, 3 and 4 as well as librarian-puppet are supported.
+
 ## Table of Contents
 
 * [Installation](#installation)
@@ -106,7 +108,7 @@ mod 'puppetlabs/apache'
 EOF
 ```
 
-Run librarian-puppet with *--no-use-v1-api* option to instruct it to use v3 API
+Run librarian-puppet with *--no-use-v1-api* option to instruct it to use v3 API for better performance
 ```
 librarian-puppet install --no-use-v1-api
 ```
@@ -154,11 +156,6 @@ Puppet module *metadata* json representation is used as a main business *model*.
 
 *Backend* classes are providing the means of fetching required data and creating model instances.
 
-
-## TODO
-
-1. Create UTs for core logic
-2. Implement *source* and *git* backends to match [puppet library](https://github.com/drrb/puppet-library) feature set
 
 ## Limitations
 
