@@ -26,7 +26,6 @@ Puppet 2, 3 and 4 as well as librarian-puppet are supported.
   * [App (controller)](#app-controller)
   * [Models](#models)
   * [Backends](#backends)
-* [TODO](#todo)
 * [Limitations](#limitations)
 * [Reference](#reference)
 
