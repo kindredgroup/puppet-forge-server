@@ -22,4 +22,8 @@
         .col
           %h3= "#{element['owner']['username']}/#{element['name']}"
           %p= element['current_release']['metadata']['summary']
-          %p.release-info= "Version #{element['current_release']['metadata']['version']}"
+          %span.release-info= "Version #{element['current_release']['metadata']['version']}"
+          - if element['current_release']['metadata']['issues_url']
+            %a{:class => "module-link", :href => element['current_release']['metadata']['issues_url']}= "Report issues"
+          - if element['current_release']['metadata']['project_page']
+            %a{:class => "module-link", :href => element['current_release']['metadata']['project_page']}= "Project URL"
