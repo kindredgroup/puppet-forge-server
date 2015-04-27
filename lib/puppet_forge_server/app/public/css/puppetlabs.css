@@ -240,7 +240,7 @@ li {
 .list.modules .summary {
   padding-right: 40px;
 }
-p.release-info {
+span.release-info {
   font-size: 0.9em;
   color: #6c6d6d;
 }
@@ -266,4 +266,9 @@ span.puppet {
 span.forge {
   color: #6B529A;
   float: right;
+}
+a.module-link {
+  margin-left: 10px;
+  color: #0095dd;
+  font-size: 0.9em;
 }
