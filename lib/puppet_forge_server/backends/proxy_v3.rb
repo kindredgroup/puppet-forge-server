@@ -34,7 +34,7 @@ module PuppetForgeServer::Backends
       rescue => e
         @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
         @log.debug("Error: #{e}")
-        nil
+        return nil
       end
     end
 
@@ -45,7 +45,7 @@ module PuppetForgeServer::Backends
       rescue => e
         @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
         @log.debug("Error: #{e}")
-        nil
+        return nil
       end
     end
 

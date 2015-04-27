@@ -27,7 +27,7 @@ module PuppetForgeServer::Utils
         buffer = backend.get_file_buffer(path)
         return buffer if buffer
       end
-      nil
+      return nil
     end
   end
 end
