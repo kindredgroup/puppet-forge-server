@@ -73,7 +73,7 @@ module PuppetForgeServer::Backends
       Dir["#{@module_dir}/**/#{file_name}"].map do |path|
         {
             :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(read_metadata(path))),
-            :checksum => options[:with_checksum] == true ? Digest::MD5.hexdigest(File.read(path)) : nil,
+            :checksum => options[:with_checksum] == true ? Digest::MD5.file(path).hexdigest : nil,
             :path => "/#{Pathname.new(path).relative_path_from(Pathname.new(@module_dir))}"
         }
       end
