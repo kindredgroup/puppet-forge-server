@@ -13,6 +13,7 @@ Puppet 2, 3 and 4 as well as librarian-puppet are supported.
 ## Table of Contents
 
 * [Installation](#installation)
+  * [Dependencies](#dependencies)
 * [Getting Started](#getting-started)
   * [Proxy](#proxy)
     * [Proxy the official Puppet Forge v3 API](#proxy-the-official-puppet-forge-v3-api)
@@ -43,6 +44,15 @@ cd puppet-forge-server
 bundle install
 bundle exec bin/puppet-forge-server --help
 ```
+
+### Dependencies
+The gem installtion requires the ruby development packages and GCC.
+
+Red Hat (and derivitives)
+``` yum install gcc ruby-devel ```
+
+Debian (and derivitives)
+``` apt-get install gcc ruby-dev ```
 
 ## Getting Started
 
