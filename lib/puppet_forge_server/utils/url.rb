@@ -23,10 +23,10 @@ module PuppetForgeServer::Utils
       begin
         url = URI.parse(uri_string)
       rescue URI::InvalidURIError => e
-        raise PuppetForgeServer::Error::Expected, "Invalid URL '#{uri_string}': #{e.message}"
+        raise PuppetForgeServer::Errors::Expected, "Invalid URL '#{uri_string}': #{e.message}"
       end
       if url.scheme
-        raise PuppetForgeServer::Error::Expected, "Invalid URL '#{uri_string}': unsupported protocol '#{url.scheme}'" unless url.scheme =~ /^https?$/
+        raise PuppetForgeServer::Errors::Expected, "Invalid URL '#{uri_string}': unsupported protocol '#{url.scheme}'" unless url.scheme =~ /^https?$/
       else
         uri_string = "http://#{uri_string}"
       end
