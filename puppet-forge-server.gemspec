@@ -38,6 +38,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'sinatra-contrib', '~> 1.4'
   spec.add_dependency 'json', '~> 1.8'
   spec.add_dependency 'rack-mount', '~> 0.8'
+  spec.add_dependency 'rack', '1.5.5'
   spec.add_dependency 'open4', '~> 1.3'
   spec.add_dependency 'open_uri_redirections', '~> 0.1'
   spec.add_dependency 'haml', '~> 4.0'
