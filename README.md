@@ -138,6 +138,44 @@ sudo -u forge puppet-forge-server -D -m /opt/forge/modules -x https://forgeapi.p
 
 You are done. Now go install some puppet modules.
 
+### Behind Apache (Passenger Support)
+
+Apache virtualhost config:
+```
+<VirtualHost *:80>
+    ServerName localhost
+    DocumentRoot /opt/forge/public
+    <Directory /opt/forge/public>
+        Allow from all
+        Options -MultiViews
+        Require all granted
+    </Directory>
+</VirtualHost>
+```
+
+Create a `config.ru` one folder down from the Apache DocumentRoot, eg: /opt/forge/config.ru:
+```
+require 'rubygems'
+require 'puppet_forge_server'
+
+# Set base cache directory for proxy backends 
+cache_dir = '/opt/forge/cache' # default: File.join(Dir.tmpdir.to_s, 'puppet-forge-server', 'cache')
+
+# Create backends
+backends = [
+  PuppetForgeServer::Backends::Directory.new('/opt/forge/modules'),
+  PuppetForgeServer::Backends::ProxyV3.new('https://forgeapi.puppetlabs.com', cache_dir)
+]
+
+# Disable access logging, log errors to STDERR
+PuppetForgeServer::Logger.set({:server => STDERR, :access => File.open(File::NULL, "w")})
+
+# Run
+run PuppetForgeServer::Server.new.build(backends, PuppetForgeServer::Utils::OptionParser.class_eval('@@DEFAULT_WEBUI_ROOT'))
+```
+
+You can now connect to http://localhost and see the web interface, start using and adding modules in the same way as you would running as a Daemon.
+
 ## Web UI
 
 Puppet forge server comes with built-in web UI looking very similar to the official puppet forge web page and providing a simple module search feature. Each view haml file corresponds to the request endpoint; for example **/** or index  is formed by the index.haml located in the *views* directory and obviously combined with layout.haml that is being refered to during any request. 
