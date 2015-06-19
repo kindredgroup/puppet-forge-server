@@ -174,7 +174,7 @@ PuppetForgeServer::Logger.set({:server => STDERR, :access => File.open(File::NUL
 run PuppetForgeServer::Server.new.build(backends, PuppetForgeServer::Utils::OptionParser.class_eval('@@DEFAULT_WEBUI_ROOT'))
 ```
 
-You can now connect to http://localhost and see the web interface, start using and adding modules in the same way as you would running it as a standalone.
+You can now connect to http://localhost and see the web interface, start using and adding modules in the same way as you would running as a Daemon.
 
 ## Web UI
 
