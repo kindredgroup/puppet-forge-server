@@ -97,7 +97,11 @@ module PuppetForgeServer
           case type
             when 'Proxy'
               @log.info "Detecting API version for #{url}..."
-              PuppetForgeServer::Backends.const_get("#{type}V#{get_api_version(url)}").new(url.chomp('/'), options[:cache_basedir])
+              [
+                PuppetForgeServer::Backends.const_get("#{type}V#{get_api_version(url)}").new(url.chomp('/'), options[:cache_basedir]),
+                # Add directory backend for serving cached modules in case proxy flips over
+                PuppetForgeServer::Backends.const_get('Directory').new(options[:cache_basedir])
+              ]
             else
               PuppetForgeServer::Backends.const_get(type).new(url)
           end

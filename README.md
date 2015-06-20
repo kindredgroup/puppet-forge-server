@@ -164,6 +164,8 @@ cache_dir = '/opt/forge/cache' # default: File.join(Dir.tmpdir.to_s, 'puppet-for
 # Create backends
 backends = [
   PuppetForgeServer::Backends::Directory.new('/opt/forge/modules'),
+  # Add directory backend for serving cached modules in case proxy flips over
+  PuppetForgeServer::Backends::Directory.new(cache_dir),
   PuppetForgeServer::Backends::ProxyV3.new('https://forgeapi.puppetlabs.com', cache_dir)
 ]
 
