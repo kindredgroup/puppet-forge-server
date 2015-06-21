@@ -15,5 +15,5 @@
 # limitations under the License.
 
 module PuppetForgeServer
-    VERSION = '1.6.0'
+    VERSION = '1.7.0.pre.1'
 end

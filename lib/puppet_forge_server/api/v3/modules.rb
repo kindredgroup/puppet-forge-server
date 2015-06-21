@@ -23,22 +23,21 @@ module PuppetForgeServer::Api::V3
       metadata.each do |element|
         if modules[element[:metadata].name]
           if max_version(modules[element[:metadata].name][:current_release][:version], element[:metadata].version) == element[:metadata].version
+            # Saving curret release tags for merging with new max version current release
             tags = modules[element[:metadata].name][:current_release][:tags]
             modules[element[:metadata].name][:current_release] = get_releases([element]).first
-            modules[element[:metadata].name][:current_release][:tags] = (modules[element[:metadata].name][:current_release][:tags] + tags).uniq
+            modules[element[:metadata].name][:current_release][:tags] = (modules[element[:metadata].name][:current_release][:tags] + tags).uniq.compact
           end
-          modules[element[:metadata].name][:releases] = (modules[element[:metadata].name][:releases] + releases_version(element[:metadata])).version_sort_by { |r| r[:version] }.reverse
+          modules[element[:metadata].name][:releases] = (modules[element[:metadata].name][:releases] + releases_version(element[:metadata])).sort_by { |r| Gem::Version.new(r[:version]) }.reverse
         else
-          name = element[:metadata].name.sub(/^[^-]+-/, '')
-          author = element[:metadata].name.split('-')[0]
           modules[element[:metadata].name] = {
               :uri => "/v3/modules/#{element[:metadata].name}",
-              :name => name,
+              :name => element[:metadata].name.sub(/^[^-]+-/, ''),
               :homepage_url => element[:metadata].project_page,
               :issues_url => element[:metadata].issues_url,
               :releases => releases_version(element[:metadata]),
               :current_release => get_releases([element]).first,
-              :owner => {:username => author, :uri => "/v3/users/#{author}"}
+              :owner => {:username => element[:metadata].author, :uri => "/v3/users/#{element[:metadata].author}"}
           }
         end
       end

@@ -19,11 +19,13 @@ require 'zlib'
 
 module PuppetForgeServer::Utils
   module Archiver
-    def read_entry(path, entry_name_regex)
-      tar = Gem::Package::TarReader.new(Zlib::GzipReader.open(path))
+    def read_from_archive(archive, name_regex)
+      tar = Gem::Package::TarReader.new(Zlib::GzipReader.open(archive))
       tar.rewind
-      entry = tar.find { |e| e.full_name =~ entry_name_regex } or raise "Couldn't find entry in archive matching #{entry_name_regex.inspect}"
-      entry.read
+      tar.each do |obj|
+        return obj.read if obj.full_name =~ name_regex
+      end
+      raise "Given name #{name_regex} not found in #{archive}"
     end
   end
 end

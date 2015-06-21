@@ -92,21 +92,20 @@ module PuppetForgeServer
 
     private
     def backends(options)
-      options[:backend].map do |type, typed_backends|
+      # Add directory backend for serving cached modules in case proxy flips over
+      backends = options[:backend]['Proxy'] && ! options[:backend]['Proxy'].empty? ? [PuppetForgeServer::Backends.const_get('Directory').new(options[:cache_basedir])] : []
+      backends << options[:backend].map do |type, typed_backends|
         typed_backends.map do |url|
           case type
             when 'Proxy'
               @log.info "Detecting API version for #{url}..."
-              [
-                PuppetForgeServer::Backends.const_get("#{type}V#{get_api_version(url)}").new(url.chomp('/'), options[:cache_basedir]),
-                # Add directory backend for serving cached modules in case proxy flips over
-                PuppetForgeServer::Backends.const_get('Directory').new(options[:cache_basedir])
-              ]
+              PuppetForgeServer::Backends.const_get("#{type}V#{get_api_version(url)}").new(url.chomp('/'), options[:cache_basedir])
             else
               PuppetForgeServer::Backends.const_get(type).new(url)
           end
         end
-      end.flatten.sort_by { |backend| backend.PRIORITY }
+      end
+      backends.flatten.sort_by { |backend| backend.PRIORITY }
     end
   end
 end

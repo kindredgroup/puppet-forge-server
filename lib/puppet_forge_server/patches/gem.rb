@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 #
-# Copyright 2014 North Development AB
+# Copyright 2015 North Development AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,16 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module PuppetForgeServer::Api::V1
-  module Releases
-    def get_releases(metadata)
-      metadata.map do |element|
-        {
-            :file => "/api/v1/files#{element[:path]}",
-            :version => element[:metadata].version,
-            :dependencies => element[:metadata].dependencies.map {|dep| [dep.name, dep.version_requirement]}.compact
-        }
-      end.sort_by { |r| Gem::Version.new(r[:version]) }
-    end
+class Gem::Version
+  def initialize version
+    @version = self.class.correct?(version) ? version.to_s.strip.gsub('-', '.pre.') : '0'
   end
 end

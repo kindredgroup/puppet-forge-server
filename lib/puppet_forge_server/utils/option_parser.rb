@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 #
-# Copyright 2014 drrb
-# Copyright 2014 North Development AB
+# Copyright 2015 North Development AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +16,7 @@
 
 require 'optparse'
 require 'tmpdir'
+require 'uri'
 
 module PuppetForgeServer::Utils
   module OptionParser
@@ -28,42 +28,43 @@ module PuppetForgeServer::Utils
     @@DEFAULT_CACHE_DIR = File.join(Dir.tmpdir.to_s, 'puppet-forge-server', 'cache')
     @@DEFAULT_LOG_DIR = File.join(Dir.tmpdir.to_s, 'puppet-forge-server', 'log')
     @@DEFAULT_WEBUI_ROOT = File.expand_path('../app', File.dirname(__FILE__))
+    @@DEFAULT_HOST = '0.0.0.0'
 
     def parse_options(args)
-      options = {:daemonize => @@DEFAULT_DAEMONIZE, :cache_basedir => @@DEFAULT_CACHE_DIR, :port => @@DEFAULT_PORT, :webui_root => @@DEFAULT_WEBUI_ROOT}
+      options = {:daemonize => @@DEFAULT_DAEMONIZE, :cache_basedir => @@DEFAULT_CACHE_DIR, :port => @@DEFAULT_PORT, :webui_root => @@DEFAULT_WEBUI_ROOT, :host => @@DEFAULT_HOST}
       option_parser = ::OptionParser.new do |opts|
         opts.banner = "Usage: #{File.basename $0} [options]"
         opts.version = PuppetForgeServer::VERSION
 
-        opts.on('-p', "--port PORT', 'Port to listen on (default: #{@@DEFAULT_PORT})") do |port|
+        opts.on('-p', '--port PORT', "Port number to bind to (default: #{@@DEFAULT_PORT})") do |port|
           options[:port] = port
         end
 
-        opts.on('-b', '--bind-host HOSTNAME', 'Host name to bind to (default: whatever Rack wants to use)') do |hostname|
-          options[:hostname] = hostname
+        opts.on('-b', '--bind HOST', "Host name or IP address to bind to (default: #{@@DEFAULT_HOST})") do |host|
+          options[:host] = host
         end
 
-        opts.on('-D', '--daemonize', "Run the server in the background (default: #{@@DEFAULT_DAEMONIZE})") do
+        opts.on('-D', '--daemonize', "Run server in the background (default: #{@@DEFAULT_DAEMONIZE})") do
           options[:daemonize] = true
         end
 
-        opts.on('--pidfile FILE', 'Write a pidfile to this location after starting') do |pidfile|
+        opts.on('--pidfile FILE', "Pid file location (default: #{@@DEFAULT_PID_FILE})") do |pidfile|
           options[:pidfile] = pidfile
         end
 
         options[:backend] = {'Directory' => [], 'Proxy' => [], 'Source' => []}
-        opts.on('-m', '--module-dir DIR', 'Directory containing packaged modules (can be specified multiple times)') do |module_dir|
+        opts.on('-m', '--module-dir DIR', 'Directory containing packaged modules (recursively searched)') do |module_dir|
           options[:backend]['Directory'] << module_dir
         end
-        opts.on('-x', '--proxy URL', 'Remote forge to proxy (can be specified multiple times)') do |url|
-          options[:backend]['Proxy'] << normalize_url(url)
+        opts.on('-x', '--proxy URL', 'Remote forge URL') do |url|
+          options[:backend]['Proxy'] << url
         end
 
-        opts.on('--cache-basedir DIR', "Cache all proxies' downloaded modules under this directory (default: #{@@DEFAULT_CACHE_DIR})") do |cache_basedir|
+        opts.on('--cache-basedir DIR', "Proxy module cache base directory (default: #{@@DEFAULT_CACHE_DIR})") do |cache_basedir|
           options[:cache_basedir] = cache_basedir
         end
 
-        opts.on('--log-dir DIR', "Directory containing all server logs (if daemonized default: #{@@DEFAULT_LOG_DIR})") do |log_dir|
+        opts.on('--log-dir DIR', "Log directory (default: #{@@DEFAULT_LOG_DIR})") do |log_dir|
           options[:log_dir] = log_dir
         end
 

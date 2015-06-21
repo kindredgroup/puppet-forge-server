@@ -33,7 +33,7 @@ module PuppetForgeServer::Api::V3
             :file_uri => "/v3/files#{element[:path]}",
             :file_md5 => element[:checksum]
         }
-      end.version_sort_by { |r| r[:version] }
+      end.sort_by { |r| Gem::Version.new(r[:version]) }
     end
   end
 end

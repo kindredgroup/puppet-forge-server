@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 #
-# Copyright 2014 drrb
-# Copyright 2014 North Development AB
+# Copyright 2015 North Development AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,49 +18,37 @@ module PuppetForgeServer::Api::V1
   module Modules
 
     def get_modules(metadata)
-      modules = metadata.map do |element|
-        name = element[:metadata].name.sub(/^[^-]+-/, '')
-        full_name = element[:metadata].name.sub('-', '/')
-        {
+      modules = {}
+      metadata.each do |element|
+        if modules[element[:metadata].name]
+          if max_version(modules[element[:metadata].name][:version], element[:metadata].version) == element[:metadata].version
+            modules[element[:metadata].name][:desc] = element[:metadata].description,
+            modules[element[:metadata].name][:version] = element[:metadata].version,
+            modules[element[:metadata].name][:project_url] = element[:metadata].project_page,
+            modules[element[:metadata].name][:tag_list] = (modules[element[:metadata].name][:tag_list] + element[:tags]).uniq.compact
+          end
+          modules[element[:metadata].name][:releases] = (modules[element[:metadata].name][:releases] + releases_version(element[:metadata])).sort_by { |r| Gem::Version.new(r[:version]) }.reverse
+        else
+          name = element[:metadata].name.sub(/^[^-]+-/, '')
+          modules[element[:metadata].name] = {
             :author => element[:metadata].author,
-            :full_name => full_name,
+            :full_name => element[:metadata].name.sub('-', '/'),
             :name => name,
             :desc => element[:metadata].description,
             :version => element[:metadata].version,
             :project_url => element[:metadata].project_page,
-            :releases => [{:version => element[:metadata].version}],
-            :tag_list => [element[:metadata].author, name]
-        }
+            :releases => releases_version(element[:metadata]),
+            :tag_list =>  element[:tags] ? element[:tags] : [element[:metadata].author, name],
+          }
+        end
       end
 
-      merge_modules(modules)
+      modules.values
     end
 
     private
-    def merge_modules(modules)
-      grouped_modules = modules.group_by do |result|
-        result[:full_name]
-      end
-
-      grouped_modules.values.map do |value|
-        merge_values(value)
-      end.flatten.uniq
-    end
-
-    def merge_values(value)
-      highest_version, tags, releases = value.inject([nil, [], []]) do |(highest_version, tags, releases), result|
-        [
-            max_version(highest_version, result[:version]),
-            tags + (result[:tag_list] || []),
-            releases + (result[:releases] || [])
-        ]
-      end
-
-      value.first.tap do |result|
-        result[:version] = highest_version
-        result[:tag_list] = tags.uniq
-        result[:releases] = releases.uniq.version_sort_by { |r| r[:version] }.reverse
-      end
+    def releases_version(metadata)
+      [{:version => metadata.version}]
     end
 
     def max_version(left, right)

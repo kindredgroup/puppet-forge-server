@@ -16,6 +16,7 @@
 
 require 'open-uri'
 require 'open_uri_redirections'
+require 'timeout'
 
 module PuppetForgeServer::Http
   class HttpClient
@@ -29,7 +30,9 @@ module PuppetForgeServer::Http
 
     private
     def open_uri(url)
-      open(url, 'User-Agent' => "Puppet-Forge-Server/#{PuppetForgeServer::VERSION}", :allow_redirections => :safe)
+      ::Timeout.timeout(10) do
+        open(url, 'User-Agent' => "Puppet-Forge-Server/#{PuppetForgeServer::VERSION}", :allow_redirections => :safe)
+      end
     end
   end
 end

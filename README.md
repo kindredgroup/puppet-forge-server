@@ -1,6 +1,6 @@
 # Puppet Forge Server
 
-Private Puppet Forge Server supporting local files and both v1 and v3 API proxies. Heavily inspired by the [Puppet Library](https://github.com/drrb/puppet-library).
+Private Puppet Forge Server supporting local files and both v1 and v3 API proxies.
 
 [![Build Status](https://api.travis-ci.org/unibet/puppet-forge-server.svg)](https://travis-ci.org/unibet/puppet-forge-server)
 [![Gem Version](https://badge.fury.io/rb/puppet-forge-server.svg)](http://badge.fury.io/rb/puppet-forge-server)
@@ -216,5 +216,4 @@ Puppet module *metadata* json representation is used as a main business *model*.
 
 ## Reference
 
-* [Puppet Library](https://github.com/drrb/puppet-library)
 * [Puppet Anvil](https://github.com/jhaals/puppet-anvil)

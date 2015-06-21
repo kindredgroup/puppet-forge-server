@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'puppet_forge_server/patches'
 require 'puppet_forge_server/version'
+require 'puppet_forge_server/patches/gem.rb'
 
 module PuppetForgeServer
   autoload :Server, 'puppet_forge_server/server'
