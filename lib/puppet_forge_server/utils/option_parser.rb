@@ -20,7 +20,6 @@ require 'uri'
 
 module PuppetForgeServer::Utils
   module OptionParser
-    include PuppetForgeServer::Utils::Url
 
     @@DEFAULT_DAEMONIZE = false
     @@DEFAULT_PORT = 8080

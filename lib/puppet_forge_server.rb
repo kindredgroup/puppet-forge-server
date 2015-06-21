@@ -57,7 +57,6 @@ module PuppetForgeServer
   module Utils
     autoload :Archiver, 'puppet_forge_server/utils/archiver'
     autoload :OptionParser, 'puppet_forge_server/utils/option_parser'
-    autoload :Url, 'puppet_forge_server/utils/url'
     autoload :Buffer, 'puppet_forge_server/utils/buffer'
     autoload :Http, 'puppet_forge_server/utils/http'
   end
