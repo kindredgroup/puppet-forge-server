@@ -28,7 +28,7 @@ module PuppetForgeServer::Api::V3
             modules[element[:metadata].name][:current_release] = get_releases([element]).first
             modules[element[:metadata].name][:current_release][:tags] = (modules[element[:metadata].name][:current_release][:tags] + tags).uniq.compact
           end
-          modules[element[:metadata].name][:releases] = (modules[element[:metadata].name][:releases] + releases_version(element[:metadata])).sort_by { |r| Gem::Version.new(r[:version]) }.reverse
+          modules[element[:metadata].name][:releases] = (modules[element[:metadata].name][:releases] + releases_version(element[:metadata])).uniq.sort_by { |r| Gem::Version.new(r[:version]) }.reverse
         else
           modules[element[:metadata].name] = {
               :uri => "/v3/modules/#{element[:metadata].name}",

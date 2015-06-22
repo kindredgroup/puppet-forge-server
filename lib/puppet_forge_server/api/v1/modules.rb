@@ -26,7 +26,7 @@ module PuppetForgeServer::Api::V1
             modules[element[:metadata].name][:version] = element[:metadata].version
             modules[element[:metadata].name][:project_url] = element[:metadata].project_page
           end
-          modules[element[:metadata].name][:releases] = (modules[element[:metadata].name][:releases] + releases_version(element[:metadata])).sort_by { |r| Gem::Version.new(r[:version]) }.reverse
+          modules[element[:metadata].name][:releases] = (modules[element[:metadata].name][:releases] + releases_version(element[:metadata])).uniq.sort_by { |r| Gem::Version.new(r[:version]) }.reverse
           modules[element[:metadata].name][:tag_list] = (modules[element[:metadata].name][:tag_list] + element[:tags]).uniq.compact
         else
           name = element[:metadata].name.sub(/^[^-]+-/, '')

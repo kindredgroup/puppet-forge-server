@@ -23,7 +23,7 @@ module PuppetForgeServer::Api::V1
             :version => element[:metadata].version,
             :dependencies => element[:metadata].dependencies.map {|dep| [dep.name, dep.version_requirement]}.compact
         }
-      end.sort_by { |r| Gem::Version.new(r[:version]) }
+      end.uniq{|r| r[:version]}.sort_by {|r| Gem::Version.new(r[:version])}
     end
   end
 end
