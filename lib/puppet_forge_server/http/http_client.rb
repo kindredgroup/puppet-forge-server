@@ -20,8 +20,16 @@ require 'timeout'
 
 module PuppetForgeServer::Http
   class HttpClient
+    def initialize
+      @log = PuppetForgeServer::Logger.get
+    end
+
     def get(url)
-      open_uri(url).read
+      begin
+        open_uri(url).read
+      rescue
+        nil
+      end
     end
 
     def download(url)
@@ -30,8 +38,12 @@ module PuppetForgeServer::Http
 
     private
     def open_uri(url)
-      ::Timeout.timeout(10) do
-        open(url, 'User-Agent' => "Puppet-Forge-Server/#{PuppetForgeServer::VERSION}", :allow_redirections => :safe)
+      begin
+        ::Timeout.timeout(10) do
+          open(url, 'User-Agent' => "Puppet-Forge-Server/#{PuppetForgeServer::VERSION}", :allow_redirections => :safe)
+        end
+      rescue ::Timeout::Error
+        @log.error("Timeout connecting to: "+url)
       end
     end
   end
