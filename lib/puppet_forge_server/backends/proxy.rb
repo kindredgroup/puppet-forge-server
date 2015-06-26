@@ -34,14 +34,14 @@ module PuppetForgeServer::Backends
 
     def get_file_buffer(relative_path)
       file_name = relative_path.split('/').last
-      File.join(@cache_dir, file_name[0], file_name)
+      File.join(@cache_dir, file_name[0].downcase, file_name)
       path = Dir["#{@cache_dir}/**/#{file_name}"].first
       unless File.exist?("#{path}")
         buffer = download("/#{relative_path}")
-        File.open(File.join(@cache_dir, file_name[0], file_name), 'wb') do |file|
+        File.open(File.join(@cache_dir, file_name[0].downcase, file_name), 'wb') do |file|
           file.write(buffer.read)
         end
-        path = File.join(@cache_dir, file_name[0], file_name)
+        path = File.join(@cache_dir, file_name[0].downcase, file_name)
       end
       File.open(path, 'rb')
     rescue => e
