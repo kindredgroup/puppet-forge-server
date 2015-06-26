@@ -19,7 +19,7 @@ module PuppetForgeServer::Api::V1
     def get_releases(metadata)
       metadata.map do |element|
         {
-            :file => "/api/v1/files#{element[:path]}",
+            :file => "/api/v1/files#{element[:path].gsub(/^\/api\/v1\/files\//, '')}",
             :version => element[:metadata].version,
             :dependencies => element[:metadata].dependencies.map {|dep| [dep.name, dep.version_requirement]}
         }
