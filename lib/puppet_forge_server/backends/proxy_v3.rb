@@ -24,6 +24,7 @@ module PuppetForgeServer::Backends
 
     def initialize(url, cache_dir, http_client = PuppetForgeServer::Http::HttpClient.new)
       super(url, cache_dir, http_client)
+      @api_file_path = '/v3/files'
     end
 
     def get_metadata(author, name, options = {})

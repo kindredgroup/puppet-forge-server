@@ -30,7 +30,7 @@ module PuppetForgeServer::Api::V3
             :metadata => element[:metadata].to_hash,
             :version => element[:metadata].version,
             :tags => element[:tags] ? element[:tags] : [element[:metadata].author, name],
-            :file_uri => "/v3/files#{element[:path]}",
+            :file_uri => "/v3/files#{element[:path].gsub(/^\/v3\/files\//, '')}",
             :file_md5 => element[:checksum]
         }
       end.uniq{|r| r[:version]}.sort_by { |r| Gem::Version.new(r[:version]) }

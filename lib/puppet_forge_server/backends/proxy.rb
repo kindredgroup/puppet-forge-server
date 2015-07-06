@@ -63,7 +63,7 @@ module PuppetForgeServer::Backends
     end
 
     def download(relative_url)
-      @http_client.download(url(relative_url))
+      @http_client.download(url("#{@api_file_path}/#{relative_url}"))
     end
 
     def url(relative_url)
