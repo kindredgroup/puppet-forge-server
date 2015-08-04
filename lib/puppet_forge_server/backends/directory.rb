@@ -62,6 +62,11 @@ module PuppetForgeServer::Backends
       return nil
     end
 
+    def normalize_metadata(metadata)
+      metadata['name'] = metadata['name'].gsub('/', '-')
+      metadata
+    end
+
     def parse_dependencies(metadata)
       metadata.dependencies = metadata.dependencies.dup.map do |dependency|
         PuppetForgeServer::Models::Dependency.new({:name => dependency['name'], :version_requirement => dependency['version_requirement']})
@@ -76,7 +81,7 @@ module PuppetForgeServer::Backends
         metadata_raw = read_metadata(path)
         if metadata_raw
           file_metadata << {
-            :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(metadata_raw)),
+            :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(normalize_metadata(metadata_raw))),
             :checksum => options[:with_checksum] == true ? Digest::MD5.file(path).hexdigest : nil,
             :path => "/#{Pathname.new(path).relative_path_from(Pathname.new(@module_dir))}"
           }
