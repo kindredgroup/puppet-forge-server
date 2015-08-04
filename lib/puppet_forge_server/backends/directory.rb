@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 #
-# Copyright 2014 North Development AB
+# Copyright 2015 North Development AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ module PuppetForgeServer::Backends
 
     def initialize(url)
       @module_dir = url
+      @log = PuppetForgeServer::Logger.get
     end
 
     def query_metadata(query, options = {})
@@ -70,13 +71,20 @@ module PuppetForgeServer::Backends
 
     def get_file_metadata(file_name, options)
       options = ({:with_checksum => true}).merge(options)
-      Dir["#{@module_dir}/**/#{file_name}"].map do |path|
-        {
-            :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(read_metadata(path))),
+      file_metadata = []
+      Dir["#{@module_dir}/**/#{file_name}"].each do |path|
+        metadata_raw = read_metadata(path)
+        if metadata_raw
+          file_metadata << {
+            :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(metadata_raw)),
             :checksum => options[:with_checksum] == true ? Digest::MD5.file(path).hexdigest : nil,
             :path => "/#{Pathname.new(path).relative_path_from(Pathname.new(@module_dir))}"
-        }
+          }
+        else
+          @log.error "Failed reading metadata from #{path}"
+        end
       end
+      file_metadata
     end
   end
 end
