@@ -65,5 +65,15 @@ module PuppetForgeServer::App
       end.flatten.compact.uniq
       json get_modules(metadata)
     end
+
+    get '/system/releases/:letter/:user/:file' do
+      file = params[:file]
+      buffer = get_buffer(@backends, file)
+      halt 404, json({:errors => ['404 Not found']}) unless buffer
+      content_type 'application/octet-stream'
+      attachment file
+      download buffer
+    end
+
   end
 end
