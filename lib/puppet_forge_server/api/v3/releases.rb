@@ -31,7 +31,8 @@ module PuppetForgeServer::Api::V3
             :version => element[:metadata].version,
             :tags => element[:tags] ? element[:tags] : [element[:metadata].author, name],
             :file_uri => "/v3/files#{element[:path]}",
-            :file_md5 => element[:checksum]
+            :file_md5 => element[:checksum],
+            :deleted_at => nil
         }
       end.uniq{|r| r[:version]}.sort_by { |r| Gem::Version.new(r[:version]) }
     end
