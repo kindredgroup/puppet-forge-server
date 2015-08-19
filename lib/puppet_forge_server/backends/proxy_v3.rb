@@ -78,7 +78,8 @@ module PuppetForgeServer::Backends
             :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(normalize_metadata(element['metadata']))),
             :checksum => element['file_md5'],
             :path => element['file_uri'],
-            :tags => (element['tags'] + (element['metadata']['tags'] ? element['metadata']['tags'] : [])).flatten.uniq
+            :tags => (element['tags'] + (element['metadata']['tags'] ? element['metadata']['tags'] : [])).flatten.uniq,
+            :deleted_at => element['deleted_at']
         }
       end
     end
