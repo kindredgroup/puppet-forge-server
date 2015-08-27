@@ -22,10 +22,11 @@ module PuppetForgeServer::Backends
 
     # Priority should be lower than v3 API proxies as v3 requires less API calls
     @@PRIORITY = 15
+    @@FILE_PATH = '/api/v1/files'
     attr_reader :PRIORITY
 
     def initialize(url, cache_dir, http_client = PuppetForgeServer::Http::HttpClient.new)
-      super(url, cache_dir, http_client)
+      super(url, cache_dir, http_client, @@FILE_PATH)
     end
 
     def get_metadata(author, name, options = {})
@@ -78,7 +79,7 @@ module PuppetForgeServer::Backends
           {
               :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(raw_metadata)),
               :checksum => options[:with_checksum] ? Digest::MD5.hexdigest(File.read(get_file_buffer(release['file']))) : nil,
-              :path => "#{release['file']}",
+              :path => "#{release['file']}".gsub(/^#{@@FILE_PATH}/, ''),
               :tags => tags
           }
         end

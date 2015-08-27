@@ -20,11 +20,12 @@ require 'digest/sha1'
 module PuppetForgeServer::Backends
   class Proxy
 
-    def initialize(url, cache_dir, http_client)
+    def initialize(url, cache_dir, http_client, file_path)
       @url = url
       @cache_dir = File.join(cache_dir, Digest::SHA1.hexdigest(@url))
       @http_client = http_client
       @log = PuppetForgeServer::Logger.get
+      @file_path = file_path
 
       # Create directory structure for all alphabetic letters
       (10...36).each do |i|
@@ -37,7 +38,7 @@ module PuppetForgeServer::Backends
       File.join(@cache_dir, file_name[0].downcase, file_name)
       path = Dir["#{@cache_dir}/**/#{file_name}"].first
       unless File.exist?("#{path}")
-        buffer = download("/#{relative_path}")
+        buffer = download("#{@file_path.chomp('/')}/#{relative_path}")
         File.open(File.join(@cache_dir, file_name[0].downcase, file_name), 'wb') do |file|
           file.write(buffer.read)
         end

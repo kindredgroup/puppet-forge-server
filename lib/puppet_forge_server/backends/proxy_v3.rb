@@ -20,10 +20,11 @@ module PuppetForgeServer::Backends
   class ProxyV3 < PuppetForgeServer::Backends::Proxy
 
     @@PRIORITY = 10
+    @@FILE_PATH = '/v3/files'
     attr_reader :PRIORITY
 
     def initialize(url, cache_dir, http_client = PuppetForgeServer::Http::HttpClient.new)
-      super(url, cache_dir, http_client)
+      super(url, cache_dir, http_client, @@FILE_PATH)
     end
 
     def get_metadata(author, name, options = {})
@@ -77,7 +78,7 @@ module PuppetForgeServer::Backends
         {
             :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(normalize_metadata(element['metadata']))),
             :checksum => element['file_md5'],
-            :path => element['file_uri'],
+            :path => element['file_uri'].gsub(/^#{@@FILE_PATH}/, ''),
             :tags => (element['tags'] + (element['metadata']['tags'] ? element['metadata']['tags'] : [])).flatten.uniq,
             :deleted_at => element['deleted_at']
         }
