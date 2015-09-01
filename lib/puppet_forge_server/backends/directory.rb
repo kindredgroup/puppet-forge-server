@@ -23,7 +23,6 @@ module PuppetForgeServer::Backends
 
     # Give highest priority to locally hosted modules
     @@PRIORITY = 0
-    @@FILE_PATH = ''
     attr_reader :PRIORITY
 
     def initialize(url)
@@ -41,8 +40,8 @@ module PuppetForgeServer::Backends
     end
 
     def get_file_buffer(relative_path)
-      path = File.join(File.expand_path(@module_dir), relative_path)
-      File.open(path, 'r') if File.exist?(path)
+      path = Dir["#{@module_dir}/**/#{relative_path}"].first
+      File.open(path, 'r') if path
     end
 
     def upload(file_data)
@@ -84,7 +83,7 @@ module PuppetForgeServer::Backends
           file_metadata << {
             :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(normalize_metadata(metadata_raw))),
             :checksum => options[:with_checksum] == true ? Digest::MD5.file(path).hexdigest : nil,
-            :path => "/#{Pathname.new(path).relative_path_from(Pathname.new(@module_dir))}".gsub(/^#{@@FILE_PATH}/, '')
+            :path => "/#{File.basename(path)}"
           }
         else
           @log.error "Failed reading metadata from #{path}"
