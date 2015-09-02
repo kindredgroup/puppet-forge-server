@@ -31,7 +31,7 @@ module PuppetForgeServer::Backends
       query ="#{author}-#{name}"
       begin
         releases = options[:version] ? [JSON.parse(get("/v3/releases/#{query}-#{options[:version]}"))] : get_all_result_pages("/v3/releases?module=#{query}")
-        get_release_metadata(releases)
+        get_modules(releases)
       rescue => e
         @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
         @log.debug("Error: #{e}")
@@ -42,7 +42,7 @@ module PuppetForgeServer::Backends
     def query_metadata(query, options = {})
       begin
         releases = get_all_result_pages("/v3/modules?query=#{query}").map {|element| element['current_release']}
-        get_release_metadata(releases)
+        get_modules(releases)
       rescue => e
         @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
         @log.debug("Error: #{e}")
@@ -73,15 +73,15 @@ module PuppetForgeServer::Backends
       metadata
     end
 
-    def get_release_metadata(releases)
+    def get_modules(releases)
       releases.map do |element|
-        {
-            :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(normalize_metadata(element['metadata']))),
-            :checksum => element['file_md5'],
-            :path => element['file_uri'].gsub(/^#{@@FILE_PATH}/, ''),
-            :tags => (element['tags'] + (element['metadata']['tags'] ? element['metadata']['tags'] : [])).flatten.uniq,
-            :deleted_at => element['deleted_at']
-        }
+        PuppetForgeServer::Models::Module.new({
+          :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(normalize_metadata(element['metadata']))),
+          :checksum => element['file_md5'],
+          :path => element['file_uri'].gsub(/^#{@@FILE_PATH}/, ''),
+          :tags => (element['tags'] + (element['metadata']['tags'] ? element['metadata']['tags'] : [])).flatten.uniq,
+          :deleted_at => element['deleted_at']
+        })
       end
     end
   end

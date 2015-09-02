@@ -244,6 +244,11 @@ span.release-info {
   font-size: 0.9em;
   color: #6c6d6d;
 }
+li.private {
+  background-image: url("/img/endorsement-private.png");
+  background-repeat: no-repeat;
+  background-position: right top;
+}
 p {
   margin: 0;
 }

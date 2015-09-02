@@ -18,21 +18,21 @@ module PuppetForgeServer::Api::V3
   module Releases
     def get_releases(metadata)
       metadata.map do |element|
-        name = element[:metadata].name.sub(/^[^-]+-/, '')
-        author = element[:metadata].name.split('-')[0]
+        name = element.metadata.name.sub(/^[^-]+-/, '')
+        author = element.metadata.name.split('-')[0]
         {
-            :uri => "/v3/releases/#{element[:metadata].name}-#{element[:metadata].version}",
+            :uri => "/v3/releases/#{element.metadata.name}-#{element.metadata.version}",
             :module => {
-                :uri => "/v3/modules/#{element[:metadata].name}",
+                :uri => "/v3/modules/#{element.metadata.name}",
                 :name => name,
                 :owner => {:username => author, :uri => "/v3/users/#{author}"}
             },
-            :metadata => element[:metadata].to_hash,
-            :version => element[:metadata].version,
-            :tags => element[:tags] ? element[:tags] : [element[:metadata].author, name],
-            :file_uri => "/v3/files#{element[:path]}",
-            :file_md5 => element[:checksum],
-            :deleted_at => element[:deleted_at]
+            :metadata => element.metadata.to_hash,
+            :version => element.metadata.version,
+            :tags => element.tags ? element.tags : [element.metadata.author, name],
+            :file_uri => "/v3/files#{element.path}",
+            :file_md5 => element.checksum,
+            :deleted_at => element.deleted_at
         }
       end.uniq{|r| r[:version]}.sort_by { |r| Gem::Version.new(r[:version]) }
     end

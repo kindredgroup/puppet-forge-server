@@ -47,6 +47,16 @@ module PuppetForgeServer::App
       haml :modules, :locals => {:query => query, :modules => modules}
     end
 
+    get '/upload' do
+      haml :upload, :locals => {:upload_status => ''}
+    end
+
+    post '/upload' do
+      halt(200, haml(:upload, :locals => {:upload_status => 'No file selected'})) unless params[:file]
+      response = @http_client.post_file("#{request.base_url}/v2/releases", params[:file])
+      haml :upload, :locals => {:upload_status => response.code}
+    end
+
     private
     def get(relative_url)
       begin

@@ -33,7 +33,7 @@ module PuppetForgeServer::Backends
       options = ({:with_checksum => true}).merge(options)
       query ="#{author}/#{name}"
       begin
-        get_module_metadata(JSON.parse(get("/modules.json?q=#{query}")).select { |e| e['full_name'].match("#{query}") }, options)
+        get_modules(JSON.parse(get("/modules.json?q=#{query}")).select { |e| e['full_name'].match("#{query}") }, options)
       rescue => e
         @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
         @log.debug("Error: #{e}")
@@ -44,7 +44,7 @@ module PuppetForgeServer::Backends
     def query_metadata(query, options = {})
       options = ({:with_checksum => true}).merge(options)
       begin
-        get_module_metadata(JSON.parse(get("/modules.json?q=#{query}")).select { |e| e['full_name'].match("*#{query}*") }, options)
+        get_modules(JSON.parse(get("/modules.json?q=#{query}")).select { |e| e['full_name'].match("*#{query}*") }, options)
       rescue => e
         @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
         @log.debug("Error: #{e}")
@@ -70,18 +70,18 @@ module PuppetForgeServer::Backends
       metadata
     end
 
-    def get_module_metadata(modules, options)
+    def get_modules(modules, options)
       modules.map do |element|
         version = options['version'] ? "&version=#{options['version']}" : ''
         JSON.parse(get("/api/v1/releases.json?module=#{element['author']}/#{element['name']}#{version}")).values.first.map do |release|
           tags = element['tag_list'] ? element['tag_list'] : nil
           raw_metadata = read_metadata(element, release)
-          {
-              :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(raw_metadata)),
-              :checksum => options[:with_checksum] ? Digest::MD5.hexdigest(File.read(get_file_buffer(release['file']))) : nil,
-              :path => "#{release['file']}".gsub(/^#{@@FILE_PATH}/, ''),
-              :tags => tags
-          }
+          PuppetForgeServer::Models::Module.new({
+            :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(raw_metadata)),
+            :checksum => options[:with_checksum] ? Digest::MD5.hexdigest(File.read(get_file_buffer(release['file']))) : nil,
+            :path => "#{release['file']}".gsub(/^#{@@FILE_PATH}/, ''),
+            :tags => tags
+          })
         end
       end
     end

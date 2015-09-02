@@ -20,7 +20,7 @@ module PuppetForgeServer::Models
 
     attr_accessor :author, :name, :version, :dependencies, :summary, :description, :project_page, :types
     attr_accessor :checksums, :source, :license, :issues_url, :operatingsystem_support, :requirements
-    attr_accessor :puppet_version, :tags
+    attr_accessor :puppet_version, :tags, :mail, :classes, :definitions
 
     def initialize(attributes)
       super(attributes)
