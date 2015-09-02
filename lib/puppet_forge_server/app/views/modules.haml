@@ -18,10 +18,7 @@
 .list-container
   %ul.list.modules
     - modules.each do |element|
-      - if element['private']
-        %li.clearfix.private
-      - else
-        %li.clearfix
+      %li{:class => element['private'] ? 'clearfix private' : 'clearfix'}
         .col
           %h3= "#{element['owner']['username']}/#{element['name']}"
           %p= element['current_release']['metadata']['summary']
