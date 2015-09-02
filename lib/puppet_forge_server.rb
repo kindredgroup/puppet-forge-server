@@ -51,6 +51,7 @@ module PuppetForgeServer
   module Models
     autoload :Builder, 'puppet_forge_server/models/builder'
     autoload :Metadata, 'puppet_forge_server/models/metadata'
+    autoload :Module, 'puppet_forge_server/models/module'
     autoload :Dependency, 'puppet_forge_server/models/dependency'
   end
 

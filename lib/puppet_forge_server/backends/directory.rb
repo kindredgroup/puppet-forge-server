@@ -31,12 +31,12 @@ module PuppetForgeServer::Backends
     end
 
     def query_metadata(query, options = {})
-      get_file_metadata("*#{query}*.tar.gz", options)
+      get_modules("*#{query}*.tar.gz", options)
     end
 
     def get_metadata(author, name, options = {})
       version = options[:version] ? options[:version] : '*'
-      get_file_metadata("#{author}-#{name}-#{version}.tar.gz", options)
+      get_modules("#{author}-#{name}-#{version}.tar.gz", options)
     end
 
     def get_file_buffer(relative_path)
@@ -74,22 +74,24 @@ module PuppetForgeServer::Backends
       metadata
     end
 
-    def get_file_metadata(file_name, options)
+   def get_modules(file_name, options)
       options = ({:with_checksum => true}).merge(options)
-      file_metadata = []
+      modules = []
       Dir["#{@module_dir}/**/#{file_name}"].each do |path|
         metadata_raw = read_metadata(path)
         if metadata_raw
-          file_metadata << {
+          modules <<
+            PuppetForgeServer::Models::Module.new({
             :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(normalize_metadata(metadata_raw))),
             :checksum => options[:with_checksum] == true ? Digest::MD5.file(path).hexdigest : nil,
-            :path => "/#{File.basename(path)}"
-          }
+            :path => "/#{File.basename(path)}",
+            :private => ! @readonly
+          })
         else
           @log.error "Failed reading metadata from #{path}"
         end
       end
-      file_metadata
+      modules
     end
   end
 end
