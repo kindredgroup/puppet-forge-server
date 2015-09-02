@@ -17,9 +17,26 @@
 require 'open-uri'
 require 'open_uri_redirections'
 require 'timeout'
+require 'net/http'
+require 'net/http/post/multipart'
+
 
 module PuppetForgeServer::Http
   class HttpClient
+
+    def post_file(url, file_hash, options = {})
+      options = { :http => {}, :headers => {}}.merge(options)
+
+      uri = URI.parse(url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      options[:http].each {|k,v| http.call(k, v) }
+
+      req = Net::HTTP::Post::Multipart.new uri.path, "file" => UploadIO.new(File.open(file_hash[:tempfile]), file_hash[:type], file_hash[:filename])
+      options[:headers].each {|k,v| req[k] = v }
+
+      http.request(req)
+    end
+
     def get(url)
       open_uri(url).read
     end
