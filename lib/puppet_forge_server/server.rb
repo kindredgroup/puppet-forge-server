@@ -93,7 +93,7 @@ module PuppetForgeServer
     private
     def backends(options)
       # Add directory backend for serving cached modules in case proxy flips over
-      backends = options[:backend]['Proxy'] && ! options[:backend]['Proxy'].empty? ? [PuppetForgeServer::Backends.const_get('Directory').new(options[:cache_basedir])] : []
+      backends = options[:backend]['Proxy'] && ! options[:backend]['Proxy'].empty? ? [PuppetForgeServer::Backends.const_get('Directory').new(options[:cache_basedir], true)] : []
       backends << options[:backend].map do |type, typed_backends|
         typed_backends.map do |url|
           case type

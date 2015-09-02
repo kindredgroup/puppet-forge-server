@@ -25,9 +25,10 @@ module PuppetForgeServer::Backends
     @@PRIORITY = 0
     attr_reader :PRIORITY
 
-    def initialize(url)
+    def initialize(url, readonly = false)
       @module_dir = url
       @log = PuppetForgeServer::Logger.get
+      @readonly = readonly
     end
 
     def query_metadata(query, options = {})
@@ -45,6 +46,7 @@ module PuppetForgeServer::Backends
     end
 
     def upload(file_data)
+      return false if @readonly
       filename = File.join(@module_dir, file_data[:filename])
       return false if File.exist?(filename)
       File.open(filename, 'w') do |f|
