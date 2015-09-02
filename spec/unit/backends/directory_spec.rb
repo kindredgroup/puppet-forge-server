@@ -24,28 +24,29 @@ module PuppetForgeServer::Backends
     let(:version) { 'bogus_version' }
     let(:directory) { PuppetForgeServer::Backends::Directory.new(url) }
     let(:file_metadata) { { :metadata => nil, :checksum => nil, :path => nil} }
+    let(:backend_module) { PuppetForgeServer::Models::Module.new(file_metadata) }
     let(:file_data) { { :filename => 'bogus_filename' } }
 
     before(:each) do
-      allow(directory).to receive(:get_file_metadata).with("*#{name}*.tar.gz", {}) { file_metadata }
-      allow(directory).to receive(:get_file_metadata).with("#{author}-#{name}-*.tar.gz", {}) { file_metadata }
-      allow(directory).to receive(:get_file_metadata).with("#{author}-#{name}-#{version}.tar.gz", {:version => version}) { file_metadata }
+      allow(directory).to receive(:get_modules).with("*#{name}*.tar.gz", {}) { backend_module }
+      allow(directory).to receive(:get_modules).with("#{author}-#{name}-*.tar.gz", {}) { backend_module }
+      allow(directory).to receive(:get_modules).with("#{author}-#{name}-#{version}.tar.gz", {:version => version}) { backend_module }
       allow(File).to receive(:open).with("#{url}/#{file_data[:filename]}", 'w')
     end
 
     describe '#query_metadata' do
       it 'query metadata should return file metadata array' do
-        expect(directory.query_metadata(name)).to eq(file_metadata)
+        expect(directory.query_metadata(name)).to eq(backend_module)
       end
     end
 
     describe '#get_metadata' do
       it 'get_metadata without version should return file metadata array' do
-        expect(directory.get_metadata(author, name)).to eq(file_metadata)
+        expect(directory.get_metadata(author, name)).to eq(backend_module)
       end
 
       it 'get_metadata with version should return file metadata array' do
-        expect(directory.get_metadata(author, name, {:version => version})).to eq(file_metadata)
+        expect(directory.get_metadata(author, name, {:version => version})).to eq(backend_module)
       end
     end
 
