@@ -100,6 +100,13 @@ module PuppetForgeServer
             when 'Proxy'
               @log.info "Detecting API version for #{url}..."
               PuppetForgeServer::Backends.const_get("#{type}V#{get_api_version(url)}").new(url.chomp('/'), options[:cache_basedir])
+            when 'S3'
+              @log.info "S3 backend selected..."
+              PuppetForgeServer::Backends.const_get('S3').new(options[:backend]['S3'][0], options[:cache_basedir], Aws::S3::Client.new(
+                  region: options[:aws_region],
+                  access_key_id: options[:aws_key_id],
+                  secret_access_key: options[:aws_secret_key]
+                  ))
             else
               PuppetForgeServer::Backends.const_get(type).new(url)
           end
