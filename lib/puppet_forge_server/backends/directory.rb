@@ -57,7 +57,7 @@ module PuppetForgeServer::Backends
 
     private
     def read_metadata(archive_path)
-      metadata_file = read_from_archive(archive_path, %r[[^/]+/metadata\.json$])
+      metadata_file = read_from_archive(archive_path, %r[^([^/]+/)?metadata\.json$])
       JSON.parse(metadata_file)
     rescue => error
       warn "Error reading from module archive #{archive_path}: #{error}"
