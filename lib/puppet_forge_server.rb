@@ -46,6 +46,7 @@ module PuppetForgeServer
     autoload :Proxy, 'puppet_forge_server/backends/proxy'
     autoload :ProxyV1, 'puppet_forge_server/backends/proxy_v1'
     autoload :ProxyV3, 'puppet_forge_server/backends/proxy_v3'
+    autoload :S3, 'puppet_forge_server/backends/S3'
   end
 
   module Models
