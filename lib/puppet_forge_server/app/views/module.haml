@@ -1,0 +1,70 @@
+-# -*- encoding: utf-8 -*-
+-#
+-# Copyright 2015 North Development AB
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-# http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+- if !module_metadata.has_key? 'metadata'
+  %section{:id => 'content'}
+    %div{:class => 'site-width clearfix'}
+      %section{:id => 'body', :class => ' '}
+        No such module
+- else
+  %section{:id => 'content'}
+    %div{:class => 'site-width clearfix'}
+      %section{:id => 'body', :class => ' '}
+        %div{:class => 'module-header-container clearfix'}
+          %section{:class => module_metadata['private'] ? 'module-header private' : 'module-header'}
+            %section{:class => 'details clearfix'}
+              %div{:class => 'module-info-basic'}
+                %div{:class => 'module-info-header'}
+                  %h2
+                    %span{:class => 'namespace'}= module_metadata['metadata']['name']
+                  %div{:class => 'module-info-author'}= "by: #{module_metadata['metadata']['author']}"
+                  %ul{:class => 'module-links'}
+                    %li
+                      %a{:href => module_metadata['metadata']['homepage_url']}= 'Project URL'
+                    %li
+                      %a{:href => module_metadata['metadata']['issues_url']}= 'Report issues'
+                %div{:class => 'module-info-summary'}= module_metadata['metadata']['summary']
+            %div{:class => 'download-info clearfix'}
+              %div{:class => 'installation'}
+                %div{:class => 'pmt-option clearfix'}
+                  %strong= 'Use this command to install the latest compatible version:'
+                  %input{:type => 'text', :class => 'paste-code', :value => "puppet module install --module_repository=#{base_url} #{module_metadata['metadata']['name']}", :onclick => 'this.select()'}
+            %div{:class => 'module-meta-info clearfix'}
+              %h3= 'Module dependencies'
+              %ul.release-dependencies
+                - module_metadata['metadata']['dependencies'].each do |dep|
+                  %li
+                    %a{:href => "/module?name=#{dep['name']}"}= dep['name']
+                    = "(#{dep['version_requirement']})"
+        %section{:id => 'module-release-info'}
+          %div
+            %div{:id => 'module-release-header'}
+              %div{:id => 'module-release-title'}
+                Version
+                %strong= module_metadata['metadata']['version']
+              %div{:id => 'module-release-switcher'}
+                %label= 'Select another release: '
+                %select{:id => 'module-release-selector', :onchange => "location = this.options[this.selectedIndex].value;"}
+                  - releases.each do |release|
+                    %option{:value => "/module?name=#{module_metadata['metadata']['name']}&version=#{release['version']}", :selected => module_metadata['metadata']['version'] == release['version']}= release['version']
+                %a{:class => 'module-release-download', :href => module_metadata['file_uri'], :title => 'Download module'}= 'Download'
+            %div{:id => 'release-info-tabs', :class => 'module-meta-info'}
+              %div{:class => 'tabbed content'}
+                %div
+                  %div
+                    %section{:class => 'markdown'}
+                      :preserve
+                        #{readme_markdown}

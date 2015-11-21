@@ -17,9 +17,11 @@
 require 'sinatra/base'
 require 'haml'
 require 'json'
+require 'tilt/haml'
 
 module PuppetForgeServer::App
   class Frontend < Sinatra::Base
+    include PuppetForgeServer::Utils::MarkdownRenderer
 
     configure do
       set :haml, :format => :html5
@@ -45,6 +47,23 @@ module PuppetForgeServer::App
       query = params[:query]
       modules = get("#{request.base_url}/v3/modules?query=#{query}")['results']
       haml :modules, :locals => {:query => query, :modules => modules}
+    end
+
+    get '/module' do
+      module_v3_name = params[:name].gsub(/\//, '-')
+      releases = get("#{request.base_url}/v3/modules/#{module_v3_name}")['releases']
+      if params.has_key? 'version'
+        module_uri = releases.find {|r| r['version'] == params['version']}['uri']
+        module_metadata = get("#{request.base_url}#{module_uri}")
+      else
+        module_metadata = get("#{request.base_url}#{releases[0]['uri']}")
+      end
+      begin
+        readme_markdown = markdown(module_metadata['readme'])
+      rescue
+        readme_markdown = ''
+      end
+      haml :module, :locals => { :module_metadata => module_metadata, :base_url => request.base_url, :readme_markdown => readme_markdown, :releases => releases }
     end
 
     get '/upload' do

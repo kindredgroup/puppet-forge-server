@@ -80,7 +80,8 @@ module PuppetForgeServer::Backends
           :checksum => element['file_md5'],
           :path => element['file_uri'].gsub(/^#{@@FILE_PATH}/, ''),
           :tags => (element['tags'] + (element['metadata']['tags'] ? element['metadata']['tags'] : [])).flatten.uniq,
-          :deleted_at => element['deleted_at']
+          :deleted_at => element['deleted_at'],
+          :readme => element['readme']
         })
       end
     end
