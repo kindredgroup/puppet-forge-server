@@ -22,9 +22,11 @@ module PuppetForgeServer::Utils
     def read_from_archive(archive, name_regex)
       tar = Gem::Package::TarReader.new(Zlib::GzipReader.open(archive))
       tar.rewind
+      files = {}
       tar.each do |obj|
-        return obj.read if obj.full_name =~ name_regex
+        files[obj.full_name] = obj.read if obj.full_name =~ name_regex
       end
+      return files unless files.empty?
       raise "Given name #{name_regex} not found in #{archive}"
     end
   end

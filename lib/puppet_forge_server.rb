@@ -60,6 +60,7 @@ module PuppetForgeServer
     autoload :OptionParser, 'puppet_forge_server/utils/option_parser'
     autoload :Buffer, 'puppet_forge_server/utils/buffer'
     autoload :Http, 'puppet_forge_server/utils/http'
+    autoload :MarkdownRenderer, 'puppet_forge_server/utils/md_renderer'
   end
 
   module Http

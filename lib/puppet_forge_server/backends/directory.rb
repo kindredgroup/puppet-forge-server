@@ -56,9 +56,15 @@ module PuppetForgeServer::Backends
     end
 
     private
-    def read_metadata(archive_path)
-      metadata_file = read_from_archive(archive_path, %r[^([^/]+/)?metadata\.json$])
-      JSON.parse(metadata_file)
+    def read_module_data(archive_path)
+      file_contents = read_from_archive(archive_path, %r[^([^/]+/)?(metadata\.json|README\.md)$])
+      metadata = JSON.parse(file_contents.find {|key, value| key =~ /metadata\.json/}[1])
+      begin
+        readme = file_contents.find {|key, value| key =~ /README\.md/}[1]
+      rescue
+        readme = nil
+      end
+      [metadata, readme]
     rescue => error
       warn "Error reading from module archive #{archive_path}: #{error}"
       return nil
@@ -80,14 +86,15 @@ module PuppetForgeServer::Backends
       options = ({:with_checksum => true}).merge(options)
       modules = []
       Dir["#{@module_dir}/**/#{file_name}"].each do |path|
-        metadata_raw = read_metadata(path)
+        metadata_raw, readme = read_module_data(path)
         if metadata_raw
           modules <<
             PuppetForgeServer::Models::Module.new({
             :metadata => parse_dependencies(PuppetForgeServer::Models::Metadata.new(normalize_metadata(metadata_raw))),
             :checksum => options[:with_checksum] == true ? Digest::MD5.file(path).hexdigest : nil,
             :path => "/#{File.basename(path)}",
-            :private => ! @readonly
+            :private => ! @readonly,
+            :readme => readme
           })
         else
           @log.error "Failed reading metadata from #{path}"

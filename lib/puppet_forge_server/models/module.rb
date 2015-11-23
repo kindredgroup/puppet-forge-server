@@ -18,7 +18,7 @@
 module PuppetForgeServer::Models
   class Module < Builder
 
-    attr_accessor :metadata, :checksum, :path, :private, :deleted_at, :tags
+    attr_accessor :metadata, :checksum, :path, :private, :deleted_at, :tags, :readme
 
     def initialize(attributes)
       super(attributes)

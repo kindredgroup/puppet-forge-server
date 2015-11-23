@@ -215,6 +215,214 @@ h3.search-results-title {
   margin: 0;
   border-bottom: solid 1px #cccccc;
 }
+.module-header {
+  position: relative;
+  float: left;
+  width: 90%;
+  min-height: 77px;
+  padding: 1em;
+  background-color: #f4f4f4;
+}
+.module-header.supported {
+  background-image: url("/assets/41dfc34/images/supported-tag-upper-right.png");
+  background-repeat: no-repeat;
+  background-position: top right;
+}
+.module-header.approved {
+  background-image: url("/assets/41dfc34/images/approved-tag-upper-right.png");
+  background-repeat: no-repeat;
+  background-position: top right;
+}
+.module-header .author,
+.module-header .tag-section {
+  padding-top: 0.25em;
+}
+.module-header .popular {
+  display: inline;
+  margin-left: 0;
+}
+.module-header .tags {
+  display: inline;
+  margin-left: 0;
+}
+.module-header .endorsement-trigger {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 77px;
+  height: 77px;
+}
+.module-header .details {
+  font-size: 0.95em;
+}
+.module-header .details table {
+  width: 100%;
+  position: relative;
+}
+.module-header .details .gravatar {
+  float: left;
+  width: 77px;
+}
+.module-header .details .gravatar .avatar {
+  margin: 0;
+  padding: 0;
+}
+.module-header .details .module-info-basic {
+  margin-left: 93px;
+  /* width of gravatar (77) + 1em (16) */
+}
+.module-header .details .module-info-basic .module-info-header {
+  margin: 0;
+  padding-right: 45px;
+}
+.module-header .details .module-info-basic .module-info-header a:hover {
+  text-decoration: underline;
+}
+.module-header .details .module-info-basic .module-info-header h2 {
+  display: inline-block;
+  margin: 0 10px 0 0;
+  line-height: 1.1rem;
+}
+@media (max-width: 1150px) {
+  .module-header .details .module-info-basic .module-info-header h2 .namespace {
+    display: none;
+  }
+}
+.module-header .details .module-info-basic .module-info-header .module-info-author {
+  display: inline-block;
+  margin-right: 15px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.module-header .details .module-info-basic .module-info-header .module-links {
+  display: inline-block;
+  font-size: 12px;
+}
+.module-header .details .module-info-basic .module-info-header .module-links li {
+  display: inline-block;
+  margin-bottom: 0;
+  margin-right: 15px;
+}
+.module-header .details .module-info-basic > div {
+  padding-bottom: 0.35em;
+}
+.module-header .details .module-info-basic ul {
+  margin: 0;
+  list-style-type: none;
+}
+.module-header .details .module-info-basic ul.release-os-compat li {
+  display: inline;
+  margin-right: 5px;
+}
+.module-header .details .module-info-basic ul.release-os-compat span[data-releases] {
+  border-bottom: 1px dotted;
+  cursor: default;
+}
+.module-header .details .module-info-basic .module-info-summary {
+  margin-bottom: 1em;
+}
+.module-header .details .module-info-basic .module-info-tags {
+  font-size: 0.85em;
+  margin-top: 1.75em;
+  width: 85%;
+}
+.module-header .details .module-info-basic .compatibility {
+  background-color: #ffffff;
+  padding: 0.5em;
+  margin-top: 0.25em;
+}
+.module-header .details .module-info-basic .compatibility ul.bullets {
+  list-style-type: disc;
+  margin-left: 1.5em;
+}
+.module-header .details .module-info-basic .compatibility ul.bullets li {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.module-header .download-info {
+  padding-top: 1em;
+  margin-top: 1em;
+  border-top: 1px #ccc solid;
+}
+.module-header .download-info > div {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.module-header .download-info .installation {
+  float: left;
+  width: 75%;
+}
+.module-header .download-info .installation small {
+  display: block;
+  float: left;
+  width: 50%;
+  font-size: 11px;
+}
+.module-header .download-info .installation small.download-link {
+  text-align: right;
+  font-weight: bold;
+}
+.module-header .download-info .download-counts {
+  float: left;
+  width: 25%;
+  padding-top: 36px;
+  padding-right: 5%;
+  text-align: right;
+  font-size: 1.1em;
+  line-height: 1em;
+  font-weight: bold;
+}
+.module-header .download-info .download-counts small {
+  font-size: 11px;
+  font-weight: normal;
+  color: #6c6d6d;
+}
+.module-header .download-info .pe-only {
+  padding-left: 93px;
+}
+.module-header .download-info .pe-only input[type=text] {
+  box-sizing: border-box;
+  max-width: none;
+  width: 100%;
+}
+.module-header .download-info .pe-only p {
+  margin-bottom: 0.5em;
+}
+.module-header-sidebar {
+  float: right;
+  width: 22%;
+}
+.module-meta-info ul.release-dependencies {
+  margin-top: 1.25em;
+}
+#module-release-header {
+  overflow: auto;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+#module-release-header #module-release-title {
+  float: left;
+  font-size: 1.2em;
+}
+#module-release-header #module-release-switcher {
+  float: right;
+  padding-top: 3px;
+  text-align: right;
+  font-size: 13px;
+}
+#module-release-header #module-release-switcher label {
+  display: inline-block;
+  font-weight: normal;
+}
+#module-release-header #module-release-switcher a {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 3px 9px;
+  min-width: 60px;
+  border-radius: 4px;
+  background-color: #f4f4f4;
+  text-align: center;
+}
 ul, ol, dl {
   margin-bottom: 1.5em;
   margin-left: 0;
@@ -249,6 +457,11 @@ li.private {
   background-repeat: no-repeat;
   background-position: right top;
 }
+section.private {
+  background-image: url("/img/endorsement-private.png");
+  background-repeat: no-repeat;
+  background-position: right top;
+}
 p {
   margin: 0;
 }
@@ -276,4 +489,26 @@ a.module-link {
   margin-left: 10px;
   color: #0095dd;
   font-size: 0.9em;
+}
+.installation input.paste-code {
+  display: block;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin-top: 0.5em;
+  margin-bottom: 3px;
+  width: 100%;
+  max-width: none;
+  padding: 0.75em;
+  border: 0;
+  background: #e5e5e5;
+  color: #5d5e59;
+  font-family: Monaco, "Liberation Mono", Courier, monospace;
+}
+pre {
+  border-radius: .25em;
+  background: #f5f2f0;
+  border: 1px solid #DDD;
+  padding: .5em 1em;
+  overflow: auto;
+  display: block;
 }
