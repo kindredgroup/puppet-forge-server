@@ -29,16 +29,20 @@ module PuppetForgeServer::Api::V1
           modules[element.metadata.name][:releases] = (modules[element.metadata.name][:releases] + releases_version(element.metadata)).uniq.sort_by { |r| Gem::Version.new(r[:version]) }.reverse
           modules[element.metadata.name][:tag_list] = (modules[element.metadata.name][:tag_list] + element.tags).uniq.compact
         else
-          name = element.metadata.name.sub(/^[^-]+-/, '')
+          author, name = element.metadata.name.split('-')
+          unless name
+            name = author
+            author = element.metadata.author
+          end
           modules[element.metadata.name] = {
-            :author => element.metadata.author,
+            :author => author,
             :full_name => element.metadata.name.sub('-', '/'),
             :name => name,
             :desc => element.metadata.description,
             :version => element.metadata.version,
             :project_url => element.metadata.project_page,
             :releases => releases_version(element.metadata),
-            :tag_list =>  element.tags ? element.tags : [element.metadata.author, name],
+            :tag_list =>  element.tags ? element.tags : [author, name],
             :private => element.private
           }
         end

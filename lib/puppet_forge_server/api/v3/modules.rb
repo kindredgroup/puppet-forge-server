@@ -30,14 +30,19 @@ module PuppetForgeServer::Api::V3
           end
           modules[element.metadata.name][:releases] = (modules[element.metadata.name][:releases] + releases_version(element.metadata)).uniq.sort_by { |r| Gem::Version.new(r[:version]) }.reverse
         else
+          author, name = element.metadata.name.split('-')
+          unless name
+            name = author
+            author = element.metadata.author
+          end
           modules[element.metadata.name] = {
               :uri => "/v3/modules/#{element.metadata.name}",
-              :name => element.metadata.name.sub(/^[^-]+-/, ''),
+              :name => name,
               :homepage_url => element.metadata.project_page,
               :issues_url => element.metadata.issues_url,
               :releases => releases_version(element.metadata),
               :current_release => get_releases([element]).first,
-              :owner => {:username => element.metadata.author, :uri => "/v3/users/#{element.metadata.author}"},
+              :owner => {:username => author, :uri => "/v3/users/#{author}"},
               :private => element.private
           }
         end

@@ -18,8 +18,11 @@ module PuppetForgeServer::Api::V3
   module Releases
     def get_releases(metadata)
       metadata.map do |element|
-        name = element.metadata.name.sub(/^[^-]+-/, '')
-        author = element.metadata.name.split('-')[0]
+        author, name = element.metadata.name.split('-')
+        unless name
+          name = author
+          author = element.metadata.author
+        end
         {
             :uri => "/v3/releases/#{element.metadata.name}-#{element.metadata.version}",
             :module => {
@@ -29,7 +32,7 @@ module PuppetForgeServer::Api::V3
             },
             :metadata => element.metadata.to_hash,
             :version => element.metadata.version,
-            :tags => element.tags ? element.tags : [element.metadata.author, name],
+            :tags => element.tags ? element.tags : [author, name],
             :file_uri => "/v3/files#{element.path}",
             :file_md5 => element.checksum,
             :deleted_at => element.deleted_at,
