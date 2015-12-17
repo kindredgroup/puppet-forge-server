@@ -17,12 +17,18 @@
 require 'open-uri'
 require 'open_uri_redirections'
 require 'timeout'
+require 'lrucache'
 require 'net/http'
 require 'net/http/post/multipart'
 
 
 module PuppetForgeServer::Http
   class HttpClient
+
+    def initialize(cache = nil)
+      cache = LRUCache.new(:ttl => 60 * 15, :max_size => 250) if cache.nil?
+      @cache = cache
+    end
 
     def post_file(url, file_hash, options = {})
       options = { :http => {}, :headers => {}}.merge(options)
@@ -46,10 +52,19 @@ module PuppetForgeServer::Http
     end
 
     private
+
     def open_uri(url)
-      ::Timeout.timeout(10) do
-        open(url, 'User-Agent' => "Puppet-Forge-Server/#{PuppetForgeServer::VERSION}", :allow_redirections => :safe)
+      contents = @cache.fetch(url) do
+        tmpfile = ::Timeout.timeout(10) do
+          PuppetForgeServer::Logger.get.debug "Fetching data for url: #{url} from remote server"
+          open(url, 'User-Agent' => "Puppet-Forge-Server/#{PuppetForgeServer::VERSION}", :allow_redirections => :safe)
+        end
+        contents = tmpfile.read
+        tmpfile.close
+        contents
       end
+      PuppetForgeServer::Logger.get.debug "Data for url: #{url} fetched, #{contents.size} bytes"
+      StringIO.new(contents)
     end
   end
 end
