@@ -51,6 +51,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.1'
   spec.add_development_dependency 'rspec-core', '~> 3.1'
   spec.add_development_dependency 'simplecov', '~> 0.11.0'
+  spec.add_development_dependency 'rspec-stopwatch', '~> 0.1.3'
 
   spec.required_ruby_version = '>= 1.9.3'
 end

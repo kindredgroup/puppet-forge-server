@@ -16,6 +16,7 @@
 
 require 'rack/test'
 require 'rspec'
+require 'rspec/stopwatch'
 require 'puppet_forge_server'
 
 ENV['RACK_ENV'] = 'test'
@@ -44,7 +45,7 @@ begin
   rescue Gem::LoadError
     # do nothing
   end
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[*formatters]
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(*formatters)
   SimpleCov.start do
     add_filter "/spec/"
     add_filter "/.vendor/"
