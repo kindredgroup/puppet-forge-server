@@ -46,12 +46,15 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'multipart-post', '~> 2.0.0'
   spec.add_dependency 'redcarpet', '~> 3.3.0'
   spec.add_dependency 'lrucache', '~> 0.1.4'
+  spec.add_dependency 'iconv', '~> 1.0.4'
 
   spec.add_development_dependency 'rake', '~> 10.3'
   spec.add_development_dependency 'rspec', '~> 3.1'
   spec.add_development_dependency 'rspec-core', '~> 3.1'
   spec.add_development_dependency 'simplecov', '~> 0.11.0'
   spec.add_development_dependency 'rspec-stopwatch', '~> 0.1.3'
+  spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'pry-byebug'
 
   spec.required_ruby_version = '>= 1.9.3'
 end

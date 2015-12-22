@@ -61,6 +61,7 @@ module PuppetForgeServer
     autoload :Buffer, 'puppet_forge_server/utils/buffer'
     autoload :Http, 'puppet_forge_server/utils/http'
     autoload :MarkdownRenderer, 'puppet_forge_server/utils/md_renderer'
+    autoload :Encoding, 'puppet_forge_server/utils/encoding'
   end
 
   module Http

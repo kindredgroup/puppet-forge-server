@@ -16,6 +16,7 @@
 
 module PuppetForgeServer::Api::V3
   module Releases
+    include PuppetForgeServer::Utils::Encoding
     def get_releases(metadata)
       metadata.map do |element|
         author, name = element.metadata.name.split('-')
@@ -36,7 +37,7 @@ module PuppetForgeServer::Api::V3
             :file_uri => "/v3/files#{element.path}",
             :file_md5 => element.checksum,
             :deleted_at => element.deleted_at,
-            :readme => element.readme
+            :readme => to_utf8(element.readme)
         }
       end.uniq{|r| r[:version]}.sort_by { |r| Gem::Version.new(r[:version]) }
     end
