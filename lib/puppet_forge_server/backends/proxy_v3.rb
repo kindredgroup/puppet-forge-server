@@ -30,11 +30,11 @@ module PuppetForgeServer::Backends
     def get_metadata(author, name, options = {})
       query ="#{author}-#{name}"
       begin
-        releases = options[:version] ? [JSON.parse(get("/v3/releases/#{query}-#{options[:version]}"))] : get_all_result_pages("/v3/releases?module=#{query}")
+        releases = get_releases(query, options)
         get_modules(releases)
       rescue => e
-        @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
-        @log.debug("Error: #{e}")
+        @log.error("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
+        @log.error("Error: #{e}")
         return nil
       end
     end
@@ -44,13 +44,26 @@ module PuppetForgeServer::Backends
         releases = get_all_result_pages("/v3/modules?query=#{query}").map {|element| element['current_release']}
         get_modules(releases)
       rescue => e
-        @log.debug("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
-        @log.debug("Error: #{e}")
+        @log.error("#{self.class.name} failed querying metadata for '#{query}' with options #{options}")
+        @log.error("Error: #{e}")
         return nil
       end
     end
 
     private
+
+    def get_releases(query, options = {})
+      version = options[:version]
+      unless version.nil?
+        url = "/v3/releases/#{query}-#{version}"
+        buffer = get_non_mutable(url)
+        release = JSON.parse(buffer)
+        [ release ]
+      else
+        get_all_result_pages("/v3/releases?module=#{query}")
+      end
+    end
+
     def get_all_result_pages(next_page)
       results = []
       begin

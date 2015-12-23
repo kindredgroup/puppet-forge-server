@@ -28,9 +28,23 @@ module PuppetForgeServer::Utils
     @@DEFAULT_LOG_DIR = File.join(Dir.tmpdir.to_s, 'puppet-forge-server', 'log')
     @@DEFAULT_WEBUI_ROOT = File.expand_path('../app', File.dirname(__FILE__))
     @@DEFAULT_HOST = '0.0.0.0'
+    @@DEFAULT_RAM_CACHE_TTL = 60 * 30 # 30min
+    @@DEFAULT_RAM_CACHE_SIZE = 250
+
+    def self.DEFAULT_OPTIONS
+      {
+        :daemonize      => @@DEFAULT_DAEMONIZE,
+        :cache_basedir  => @@DEFAULT_CACHE_DIR,
+        :port           => @@DEFAULT_PORT,
+        :webui_root     => @@DEFAULT_WEBUI_ROOT,
+        :host           => @@DEFAULT_HOST,
+        :ram_cache_ttl  => @@DEFAULT_RAM_CACHE_TTL,
+        :ram_cache_size => @@DEFAULT_RAM_CACHE_SIZE
+      }
+    end
 
     def parse_options(args)
-      options = {:daemonize => @@DEFAULT_DAEMONIZE, :cache_basedir => @@DEFAULT_CACHE_DIR, :port => @@DEFAULT_PORT, :webui_root => @@DEFAULT_WEBUI_ROOT, :host => @@DEFAULT_HOST}
+      options = PuppetForgeServer::Utils::OptionParser.DEFAULT_OPTIONS
       option_parser = ::OptionParser.new do |opts|
         opts.banner = "Usage: #{File.basename $0} [options]"
         opts.version = PuppetForgeServer::VERSION
@@ -61,6 +75,14 @@ module PuppetForgeServer::Utils
 
         opts.on('--cache-basedir DIR', "Proxy module cache base directory (default: #{@@DEFAULT_CACHE_DIR})") do |cache_basedir|
           options[:cache_basedir] = cache_basedir
+        end
+
+        opts.on('--ram-cache-ttl SECONDS', "The time to live in seconds for remote requests RAM cache (default: #{@@DEFAULT_RAM_CACHE_TTL})") do |ram_cache_ttl|
+          options[:ram_cache_ttl] = ram_cache_ttl
+        end
+
+        opts.on('--ram-cache-size ENTRIES', "The maximum number of enties in RAM cache for remote requests (default: #{@@DEFAULT_RAM_CACHE_SIZE})") do |ram_cache_size|
+          options[:ram_cache_size] = ram_cache_size
         end
 
         opts.on('--log-dir DIR', "Log directory (default: #{@@DEFAULT_LOG_DIR})") do |log_dir|

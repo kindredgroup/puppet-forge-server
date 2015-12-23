@@ -35,14 +35,16 @@ module PuppetForgeServer::Backends
 
     def get_file_buffer(relative_path)
       file_name = relative_path.split('/').last
-      File.join(@cache_dir, file_name[0].downcase, file_name)
+      target_file = File.join(@cache_dir, file_name[0].downcase, file_name)
       path = Dir["#{@cache_dir}/**/#{file_name}"].first
       unless File.exist?("#{path}")
         buffer = download("#{@file_path.chomp('/')}/#{relative_path}")
-        File.open(File.join(@cache_dir, file_name[0].downcase, file_name), 'wb') do |file|
+        File.open(target_file, 'wb') do |file|
           file.write(buffer.read)
         end
-        path = File.join(@cache_dir, file_name[0].downcase, file_name)
+        path = target_file
+      else
+        @log.info("Filesystem cache HIT for path: #{relative_path}")
       end
       File.open(path, 'rb')
     rescue => e
@@ -58,6 +60,26 @@ module PuppetForgeServer::Backends
 
     protected
     attr_reader :log
+
+    def get_non_mutable(relative_url)
+      file_name = relative_url.split('/').last
+      target_file = File.join(@cache_dir, file_name[0].downcase, file_name)
+      path = Dir["#{@cache_dir}/**/#{file_name}"].first
+      unless File.exist?("#{path}")
+        buffer = get(relative_url)
+        File.open(target_file, 'wb') do |file|
+          file.write(buffer)
+        end
+        path = target_file
+      else
+        @log.info("Filesystem cache HIT for url: #{relative_url}")
+      end
+      File.binread(path)
+    rescue => e
+      @log.error("#{self.class.name} failed getting non-mutable url '#{relative_url}'")
+      @log.error("Error: #{e}")
+      return nil
+    end
 
     def get(relative_url)
       @http_client.get(url(relative_url))
