@@ -16,6 +16,7 @@
 
 
 require 'logger'
+require 'logger/colors'
 
 module PuppetForgeServer
   class Logger
@@ -45,7 +46,13 @@ module PuppetForgeServer
                       else
                         method_name
                     end
-      @loggers.each { |logger| logger.send(method_name, args.first) }
+      if args.size > 0
+        # setters
+        @loggers.each { |logger| logger.send(method_name, args.first) }
+      else
+        # getters
+        @loggers.collect { |logger| logger.send(method_name) }
+      end
     end
 
     def respond_to?(method_name, include_private = false)

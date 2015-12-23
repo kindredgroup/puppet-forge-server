@@ -29,10 +29,13 @@ describe PuppetForgeServer::Http::HttpClient do
         socket.close
       end
     end
+    @original_level = PuppetForgeServer::Logger.get.level.first
+    PuppetForgeServer::Logger.get.level = Logger::WARN
   end
   after(:each) do
     @server.close
     @thr.kill
+    PuppetForgeServer::Logger.get.level = @original_level
   end
   let(:instance) { described_class.new(cache) }
   describe '#download' do
