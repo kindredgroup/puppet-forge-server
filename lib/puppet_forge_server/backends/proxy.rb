@@ -40,7 +40,9 @@ module PuppetForgeServer::Backends
       unless File.exist?("#{path}")
         buffer = download("#{@file_path.chomp('/')}/#{relative_path}")
         File.open(target_file, 'wb') do |file|
-          file.write(buffer.read)
+          bytes = buffer.read
+          file.write(bytes)
+          @log.debug("Saved #{bytes.size} bytes in filesystem cache for path: #{relative_path}, target file: #{target_file}")
         end
         path = target_file
       else
@@ -69,6 +71,7 @@ module PuppetForgeServer::Backends
         buffer = get(relative_url)
         File.open(target_file, 'wb') do |file|
           file.write(buffer)
+          @log.debug("Saved #{buffer} bytes in filesystem cache for url: #{relative_url}, target file: #{target_file}")
         end
         path = target_file
       else
