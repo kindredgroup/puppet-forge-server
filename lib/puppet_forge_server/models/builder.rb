@@ -27,6 +27,11 @@ module PuppetForgeServer::Models
     end
 
     def to_hash(obj = self)
+      # Quickly return if it's not one of ours
+      unless obj.kind_of? Builder
+        return obj
+      end
+      # Otherwise start building hash
       hash = {}
       obj.instance_variables.each do |var|
         var_value = obj.instance_variable_get(var)
