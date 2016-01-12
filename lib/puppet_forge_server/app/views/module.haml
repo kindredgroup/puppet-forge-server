@@ -33,7 +33,7 @@
                   %div{:class => 'module-info-author'}= "by: #{module_metadata['metadata']['author']}"
                   %ul{:class => 'module-links'}
                     %li
-                      %a{:href => module_metadata['metadata']['homepage_url']}= 'Project URL'
+                      %a{:href => module_metadata['metadata']['project_page']}= 'Project URL'
                     %li
                       %a{:href => module_metadata['metadata']['issues_url']}= 'Report issues'
                 %div{:class => 'module-info-summary'}= module_metadata['metadata']['summary']
@@ -48,7 +48,8 @@
                 - module_metadata['metadata']['dependencies'].each do |dep|
                   %li
                     %a{:href => "/module?name=#{dep['name']}"}= dep['name']
-                    = "(#{dep['version_requirement']})"
+                    - if dep['version_requirement']
+                      = "(#{dep['version_requirement']})"
         %section{:id => 'module-release-info'}
           %div
             %div{:id => 'module-release-header'}
