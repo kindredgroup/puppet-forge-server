@@ -55,7 +55,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov', '~> 0.11.0'
   spec.add_development_dependency 'rspec-stopwatch', '~> 0.1.3'
   spec.add_development_dependency 'pry'
-  spec.add_development_dependency 'pry-byebug'
+  spec.add_development_dependency 'pry-byebug' if RUBY_VERSION > '2.0.0'
 
   spec.required_ruby_version = '>= 1.9.3'
 end
