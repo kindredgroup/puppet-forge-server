@@ -35,44 +35,118 @@ module PuppetForgeServer::Utils
         opts.banner = "Usage: #{File.basename $0} [options]"
         opts.version = PuppetForgeServer::VERSION
 
-        opts.on('-p', '--port PORT', "Port number to bind to (default: #{@@DEFAULT_PORT})") do |port|
-          options[:port] = port
+        if ENV.has_key?('FORGE_PORT')
+          options[:port] = ENV['FORGE_PORT']
+        else
+          opts.on('-p', '--port PORT', "Port number to bind to (default: #{@@DEFAULT_PORT})") do |port|
+            options[:port] = port
+          end
         end
 
-        opts.on('-b', '--bind HOST', "Host name or IP address to bind to (default: #{@@DEFAULT_HOST})") do |host|
-          options[:host] = host
+        if ENV.has_key?('FORGE_BIND')
+          options[:host] = ENV['FORGE_BIND']
+        else
+          opts.on('-b', '--bind HOST', "Host name or IP address to bind to (default: #{@@DEFAULT_HOST})") do |host|
+            options[:host] = host
+          end
         end
 
-        opts.on('-D', '--daemonize', "Run server in the background (default: #{@@DEFAULT_DAEMONIZE})") do
+        if ENV.has_key?('FORGE_DAEMONIZE')
           options[:daemonize] = true
+        else
+          opts.on('-D', '--daemonize', "Run server in the background (default: #{@@DEFAULT_DAEMONIZE})") do
+            options[:daemonize] = true
+          end
         end
 
-        opts.on('--pidfile FILE', "Pid file location (default: #{@@DEFAULT_PID_FILE})") do |pidfile|
-          options[:pidfile] = pidfile
+        if ENV.has_key?('FORGE_PIDFILE')
+          options[pidfile] = ENV['FORGE_PIDFILE']
+        else
+          opts.on('--pidfile FILE', "Pid file location (default: #{@@DEFAULT_PID_FILE})") do |pidfile|
+            options[:pidfile] = pidfile
+          end
         end
 
-        options[:backend] = {'Directory' => [], 'Proxy' => [], 'Source' => []}
-        opts.on('-m', '--module-dir DIR', 'Directory containing packaged modules (recursively searched)') do |module_dir|
-          options[:backend]['Directory'] << module_dir
-        end
-        opts.on('-x', '--proxy URL', 'Remote forge URL') do |url|
-          options[:backend]['Proxy'] << url
+        options[:backend] = {'Directory' => [], 'Proxy' => [], 'Source' => [], 'S3' => []}
+
+        if ENV.has_key?('FORGE_MODULEDIR')
+          options[:backend]['Directory'] << ENV['FORGE_MODULEDIR']
+        else
+          opts.on('-m', '--module-dir DIR', 'Directory containing packaged modules (recursively searched)') do |module_dir|
+            options[:backend]['Directory'] << module_dir
+          end
         end
 
-        opts.on('--cache-basedir DIR', "Proxy module cache base directory (default: #{@@DEFAULT_CACHE_DIR})") do |cache_basedir|
-          options[:cache_basedir] = cache_basedir
+        if ENV.has_key?('FORGE_PROXY')
+          options[:backend]['Proxy'] << ENV['FORGE_PROXY']
+        else
+          opts.on('-x', '--proxy URL', 'Remote forge URL') do |url|
+            options[:backend]['Proxy'] << url
+          end
         end
 
-        opts.on('--log-dir DIR', "Log directory (default: #{@@DEFAULT_LOG_DIR})") do |log_dir|
-          options[:log_dir] = log_dir
+        if ENV.has_key?('FORGE_AWS_REGION')
+          options[:aws_region] = ENV['FORGE_AWS_REGION']
+        else
+          opts.on('--aws-region AWSREGION', 'AWS Region where the bucket is located') do |region|
+            options[:aws_region] = region
+          end
         end
 
-        opts.on('--webui-root DIR', "Directory containing views and other public files used for web UI: #{@@DEFAULT_WEBUI_ROOT})") do |webui_root|
-          options[:webui_root] = webui_root
+        if ENV.has_key?('FORGE_AWS_KEY')
+          options[:aws_key_id] = ENV['FORGE_AWS_KEY']
+        else
+          opts.on('--aws-key KEY', 'AWS Key id') do |key|
+            options[:aws_key_id] = key
+          end
         end
 
-        opts.on('--debug', 'Log everything into STDERR') do
+        if ENV.has_key?('FORGE_AWS_SECRET')
+          options[:aws_secret_key] = ENV['FORGE_AWS_SECRET']
+        else
+          opts.on('--aws-secret SECRET', 'AWS Secret key') do |secret|
+            options[:aws_secret_key] = secret
+          end
+        end
+
+        if ENV.has_key?('FORGE_S3BUCKET')
+          options[:backend]['S3'] << ENV['FORGE_S3BUCKET']
+        else
+          opts.on('-s', '--s3 BucketName', 'use S3') do |bucket|
+            options[:backend]['S3'] << bucket
+          end
+        end
+
+        if ENV.has_key?('FORGE_CACHEDIR')
+          options[:cache_basedir] = ENV['FORGE_CACHEDIR']
+        else
+          opts.on('--cache-basedir DIR', "Proxy module cache base directory (default: #{@@DEFAULT_CACHE_DIR})") do |cache_basedir|
+            options[:cache_basedir] = cache_basedir
+          end
+        end
+
+        if ENV.has_key?('FORGE_LOGDIR')
+          options[:log_dir] = ENV['FORGE_LOGDIR']
+        else
+          opts.on('--log-dir DIR', "Log directory (default: #{@@DEFAULT_LOG_DIR})") do |log_dir|
+            options[:log_dir] = log_dir
+          end
+        end
+
+        if ENV.has_key?('FORGE_WEBUI_ROOT')
+          options[:webui_root] = ENV['FORGE_WEBUI_ROOT']
+        else
+          opts.on('--webui-root DIR', "Directory containing views and other public files used for web UI: #{@@DEFAULT_WEBUI_ROOT})") do |webui_root|
+            options[:webui_root] = webui_root
+          end
+        end
+
+        if ENV.has_key?('FORGE_DEBUG')
           options[:debug] = true
+        else
+          opts.on('--debug', 'Log everything into STDERR') do
+            options[:debug] = true
+          end
         end
       end
       begin
