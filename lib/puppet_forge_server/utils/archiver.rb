@@ -24,7 +24,7 @@ module PuppetForgeServer::Utils
       tar.rewind
       files = {}
       tar.each do |obj|
-        files[obj.full_name] = obj.read if obj.full_name =~ name_regex
+        files[obj.full_name] = obj.read if obj.file? && obj.full_name =~ name_regex
       end
       return files unless files.empty?
       raise "Given name #{name_regex} not found in #{archive}"
