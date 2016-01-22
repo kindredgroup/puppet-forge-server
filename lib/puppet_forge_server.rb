@@ -56,11 +56,14 @@ module PuppetForgeServer
   end
 
   module Utils
+    autoload :CacheProvider, 'puppet_forge_server/utils/cache_provider'
+    autoload :FilteringInspecter, 'puppet_forge_server/utils/filtering_inspecter'
     autoload :Archiver, 'puppet_forge_server/utils/archiver'
     autoload :OptionParser, 'puppet_forge_server/utils/option_parser'
     autoload :Buffer, 'puppet_forge_server/utils/buffer'
     autoload :Http, 'puppet_forge_server/utils/http'
     autoload :MarkdownRenderer, 'puppet_forge_server/utils/md_renderer'
+    autoload :Encoding, 'puppet_forge_server/utils/encoding'
   end
 
   module Http

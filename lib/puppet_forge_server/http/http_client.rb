@@ -23,6 +23,15 @@ require 'net/http/post/multipart'
 
 module PuppetForgeServer::Http
   class HttpClient
+    include PuppetForgeServer::Utils::CacheProvider
+    include PuppetForgeServer::Utils::FilteringInspecter
+
+    def initialize(cache = nil)
+      cache = cache_instance if cache.nil?
+      cache.extend(PuppetForgeServer::Utils::FilteringInspecter)
+      @log = PuppetForgeServer::Logger.get
+      @cache = cache
+    end
 
     def post_file(url, file_hash, options = {})
       options = { :http => {}, :headers => {}}.merge(options)
@@ -45,11 +54,29 @@ module PuppetForgeServer::Http
       open_uri(url)
     end
 
+    def inspect
+      cache_inspected = @cache.inspect_without [ :@data ]
+      cache_inspected.gsub!(/>$/, ", @size=#{@cache.size}>")
+      inspected = inspect_without [ :@cache ]
+      inspected.gsub(/>$/, ", @cache=#{cache_inspected}>")
+    end
+
     private
+
     def open_uri(url)
-      ::Timeout.timeout(10) do
-        open(url, 'User-Agent' => "Puppet-Forge-Server/#{PuppetForgeServer::VERSION}", :allow_redirections => :safe)
+      hit_or_miss = @cache.include?(url) ? 'HIT' : 'MISS'
+      @log.info "Cache in RAM memory size: #{@cache.size}, #{hit_or_miss} for url: #{url}"
+      contents = @cache.fetch(url) do
+        tmpfile = ::Timeout.timeout(10) do
+          PuppetForgeServer::Logger.get.debug "Fetching data for url: #{url} from remote server"
+          open(url, 'User-Agent' => "Puppet-Forge-Server/#{PuppetForgeServer::VERSION}", :allow_redirections => :safe)
+        end
+        contents = tmpfile.read
+        tmpfile.close
+        contents
       end
+      @log.debug "Data for url: #{url} fetched, #{contents.size} bytes"
+      StringIO.new(contents)
     end
   end
 end

@@ -19,6 +19,7 @@ require 'rack/mount'
 module PuppetForgeServer
   class Server
     include PuppetForgeServer::Utils::OptionParser
+    include PuppetForgeServer::Utils::CacheProvider
     include PuppetForgeServer::Utils::Http
 
     def go(args)
@@ -27,6 +28,7 @@ module PuppetForgeServer
       begin
         options = parse_options(args)
         @log = logging(options)
+        configure_cache(options[:ram_cache_ttl], options[:ram_cache_size])
         backends = backends(options)
         server = build(backends, options[:webui_root])
         announce(options, backends)
