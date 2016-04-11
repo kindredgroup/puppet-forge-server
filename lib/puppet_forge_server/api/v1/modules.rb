@@ -38,7 +38,7 @@ module PuppetForgeServer::Api::V1
             :author => author,
             :full_name => element.metadata.name.sub('-', '/'),
             :name => name,
-            :desc => element.metadata.description,
+            :desc => element.metadata.description || element.metadata.summary,
             :version => element.metadata.version,
             :project_url => element.metadata.project_page,
             :releases => releases_version(element.metadata),
