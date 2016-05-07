@@ -31,6 +31,23 @@ module PuppetForgeServer::Http
       cache.extend(PuppetForgeServer::Utils::FilteringInspecter)
       @log = PuppetForgeServer::Logger.get
       @cache = cache
+      @uri_options= {
+        'User-Agent' => "Puppet-Forge-Server/#{PuppetForgeServer::VERSION}",
+        :allow_redirections => :safe,
+      }
+      # OpenURI does not work with  http_proxy=http://username:password@proxyserver:port/
+      # so split the proxy_url and feed it basic authentication.
+      if ENV.has_key?('http_proxy')
+        proxy = URI.parse(ENV['http_proxy'])
+        if proxy.userinfo != nil
+          @uri_options[:proxy_http_basic_authentication] = [
+            "#{proxy.scheme}://#{proxy.host}:#{proxy.port}",
+            proxy.userinfo.split(':')[0],
+            proxy.userinfo.split(':')[1]
+          ]
+        end
+      end
+
     end
 
     def post_file(url, file_hash, options = {})
@@ -69,7 +86,7 @@ module PuppetForgeServer::Http
       contents = @cache.fetch(url) do
         tmpfile = ::Timeout.timeout(10) do
           PuppetForgeServer::Logger.get.debug "Fetching data for url: #{url} from remote server"
-          open(url, 'User-Agent' => "Puppet-Forge-Server/#{PuppetForgeServer::VERSION}", :allow_redirections => :safe)
+          open(url, @uri_options)
         end
         contents = tmpfile.read
         tmpfile.close
