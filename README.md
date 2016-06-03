@@ -20,6 +20,8 @@ Puppet 2, 3 and 4 as well as librarian-puppet are supported.
     * [Proxy the official Puppet Forge v1 API and local Pulp puppet repository](#proxy-the-official-puppet-forge-v1-api-and-local-pulp-puppet-repository)
   * [Locally stored modules](#locally-stored-modules)
   * [All-in](#all-in)
+    *  [r10k](#r10k)
+    *  [librarian-puppet](#librarian-puppet)
   * [Daemon](#daemon)
 * [Web UI](#web-ui)
 * [Architecture](#command-reference)
@@ -108,6 +110,23 @@ wget -P modules/ forge.puppetlabs.com/system/releases/p/puppetlabs/puppetlabs-st
 bundle exec bin/puppet-forge-server -m modules/ -x https://forgeapi.puppetlabs.com -x http://my.local.pulp/pulp_puppet/forge/repository/demo
 ```
 
+#### r10k
+Create an example Puppetfile
+```
+cat > Puppetfile <<EOF
+mod 'puppetlabs/apache'
+EOF
+
+```
+Add forge/baseurl to r10k.yaml
+```
+cat >> r10k.yaml <<EOF
+forge:
+  baseurl: 'http://localhost:8080'
+EOF
+```
+
+#### librarian-puppet
 Create an example Puppetfile
 ```
 cat > Puppetfile <<EOF
