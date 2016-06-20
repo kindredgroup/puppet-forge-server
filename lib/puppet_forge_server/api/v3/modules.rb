@@ -52,7 +52,7 @@ module PuppetForgeServer::Api::V3
 
     private
     def releases_version(metadata)
-      [{:version => metadata.version, :uri => "/v3/releases/#{metadata.name}-#{metadata.version}"}]
+      [{:version => metadata.version, :uri => "/v3/releases/#{metadata.name}-#{metadata.version}", :slug => "#{metadata.name}-#{metadata.version}"}]
     end
 
     def max_version(left, right)
