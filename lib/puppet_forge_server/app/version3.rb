@@ -40,7 +40,7 @@ module PuppetForgeServer::App
 
     get '/v3/releases/:module' do
       halt 404, json({:errors => ['404 Not found']}) unless params[:module]
-      author, name, version = params[:module].split '-'
+      author, name, version = params[:module].split('-',3)
       halt 400, json({:errors => ["'#{params[:module]}' is not a valid release slug"]}) unless author && name && version
       releases = releases(author, name, version)
       halt 404, json({:errors => ['404 Not found']}) unless releases
