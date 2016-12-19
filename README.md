@@ -32,7 +32,7 @@ Puppet 2, 3 and 4 as well as librarian-puppet are supported.
 * [Limitations](#limitations)
 * [Reference](#reference)
 
-## Installation
+## Manual Installation
 
 Install the gem
 ```
@@ -46,6 +46,10 @@ cd puppet-forge-server
 bundle install
 bundle exec bin/puppet-forge-server --help
 ```
+
+## Installation with Puppet
+
+To install the Puppet Forge Server with puppet, you can use this module: https://github.com/unibet/puppet-forge_server
 
 ### Dependencies
 The gem installtion requires the ruby development packages and GCC.
