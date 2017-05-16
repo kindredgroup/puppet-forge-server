@@ -135,6 +135,12 @@ body {
 .clearfix {
   display: block;
 }
+.code-block {
+  margin: 1em;
+}
+input[type=file]{
+  display: inline-block;
+}
 input[type=search] {
   width: 80%;
   max-width: 650px;
