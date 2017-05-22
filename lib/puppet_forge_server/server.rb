@@ -71,7 +71,7 @@ module PuppetForgeServer
       options.default = 'default'
       @log.info " +- Daemonizing: #{options[:daemonize]}"
       @log.info " |- Port: #{options[:port]}"
-      @log.info " |- Host: #{options[:hostname]}"
+      @log.info " |- Host: #{options[:host]}"
       @log.info " |- Pidfile: #{options[:pidfile]}" if options[:pidfile]
       @log.info " |- Server: #{options[:server]}"
       @log.info ' `- Backends:'
@@ -84,7 +84,7 @@ module PuppetForgeServer
       FileUtils.mkdir_p File.dirname(options[:pidfile]) if options[:pidfile]
       Rack::Server.start(
           :app => server,
-          :Host => options[:hostname],
+          :Host => options[:host],
           :Port => options[:port],
           :server => options[:server],
           :daemonize => options[:daemonize],

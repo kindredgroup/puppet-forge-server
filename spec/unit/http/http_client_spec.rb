@@ -24,7 +24,7 @@ describe PuppetForgeServer::Http::HttpClient do
                      "Connection: close\r\n"
         socket.print "\r\n"
         # To simulate network lag
-        sleep 0.01
+        sleep 0.05
         socket.print response
         socket.close
       end
