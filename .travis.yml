@@ -24,3 +24,6 @@ before_install:
 
 script:
   - bundle exec rake test:all
+
+before_install:
+  - gem update bundler
