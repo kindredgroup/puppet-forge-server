@@ -45,12 +45,18 @@ module PuppetForgeServer::App
 
     get '/modules' do
       query = params[:query]
+      halt(400, haml(:security, :locals => {:query => query})) \
+        unless safe_input? query
+
       modules = get("#{request.base_url}/v3/modules?query=#{query}")['results']
       haml :modules, :locals => {:query => query, :modules => modules}
     end
 
     get '/module' do
       module_v3_name = params[:name].gsub(/\//, '-')
+      halt(400, haml(:security, :locals => {:query => module_v3_name})) \
+        unless safe_input? module_v3_name
+
       releases = get("#{request.base_url}/v3/modules/#{module_v3_name}")['releases']
       if params.has_key? 'version'
         module_uri = releases.find {|r| r['version'] == params['version']}['uri']
@@ -63,7 +69,10 @@ module PuppetForgeServer::App
       rescue
         readme_markdown = ''
       end
-      haml :module, :locals => { :module_metadata => module_metadata, :base_url => request.base_url, :readme_markdown => readme_markdown, :releases => releases }
+      haml :module, :locals => { :module_metadata => module_metadata,
+                                 :base_url => request.base_url,
+                                 :readme_markdown => readme_markdown,
+                                 :releases => releases }
     end
 
     get '/upload' do
@@ -83,6 +92,11 @@ module PuppetForgeServer::App
       rescue
         {'results' => []}
       end
+    end
+
+    def safe_input?(query)
+      unsafe_query = CGI::unescape(query)
+      %w[< javascript:].none? { |q| unsafe_query.include?(q) }
     end
   end
 end
