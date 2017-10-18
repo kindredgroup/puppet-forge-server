@@ -28,7 +28,7 @@ module PuppetForgeServer::Backends
       @file_path = file_path
 
       # Create directory structure for all alphabetic letters
-      (10...36).each do |i|
+      (0...36).each do |i|
         FileUtils.mkdir_p(File.join(@cache_dir, i.to_s(36)))
       end
     end
