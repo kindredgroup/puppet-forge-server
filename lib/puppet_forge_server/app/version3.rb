@@ -51,8 +51,8 @@ module PuppetForgeServer::App
       halt 400, json({:error => 'The number of version constraints in the query does not match the number of module names'}) unless params[:module]
       author, name = params[:module].split '-'
       releases = releases(author, name)
-      halt 200, json({:pagination => {:next => false}, :results => []}) unless releases
-      json :pagination => {:next => false, :total => releases.count}, :results => releases
+      halt 200, json({:pagination => {:next => nil}, :results => []}) unless releases
+      json :pagination => {:next => nil, :total => releases.count}, :results => releases
     end
 
     get '/v3/files/*' do
@@ -86,8 +86,8 @@ module PuppetForgeServer::App
         backend.query_metadata(query)
       end.flatten.compact.uniq
       modules = metadata.empty? ? nil : get_modules(metadata)
-      halt 200, json({:pagination => {:next => false}, :results => []}) unless modules
-      json :pagination => {:next => false, :total => modules.count}, :results => modules
+      halt 200, json({:pagination => {:next => nil}, :results => []}) unless modules
+      json :pagination => {:next => nil, :total => modules.count}, :results => modules
     end
 
     get '/v3/users/:author' do
