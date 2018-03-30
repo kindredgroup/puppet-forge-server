@@ -57,10 +57,10 @@ module PuppetForgeServer::Backends
 
     private
     def read_module_data(archive_path)
-      file_contents = read_from_archive(archive_path, %r[^([^/]+/)?(metadata\.json|README\.md)$])
+      file_contents = read_from_archive(archive_path, %r[^([^/]+/)?(metadata\.json|README\.md|README\.markdown)$])
       metadata = JSON.parse(file_contents.find {|key, value| key =~ /metadata\.json/}[1])
       begin
-        readme = file_contents.find {|key, value| key =~ /README\.md/}[1]
+        readme = file_contents.find {|key, value| key =~ /README\.md|README\.markdown/}[1]
       rescue
         readme = nil
       end
