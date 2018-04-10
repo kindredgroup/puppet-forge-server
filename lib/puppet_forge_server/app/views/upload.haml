@@ -36,7 +36,7 @@
   %div.code-block
     %pre
       :markdown
-        curl -F "file=@pkg/_&lt;name&gt;_-_&lt;version&gt;_.tar.gz" #{request.env['REQUEST_URI']}
+        curl -F "file=@pkg/_&lt;name&gt;_-_&lt;version&gt;_.tar.gz" #{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}#{request.env['REQUEST_URI']}
 
   %span.search_error
     -if upload_status
