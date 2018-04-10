@@ -40,20 +40,20 @@
             %li.active
               %a{:href => 'https://forge.puppetlabs.com/', :target => 'official-puppet-forge'} Official Puppet Forge
             %li
-              %a{:href => '/upload'}
+              %a{:href => url('/upload')}
                 Upload Puppet Module
             %li
               %a{:href => 'https://github.com/unibet/puppet-forge-server', :target => 'puppet-forge-server-github'} Help
     %script{ :src => 'https://code.jquery.com/jquery-2.1.3.min.js' }
     .section#header
       .side-width.clearfix
-        %a{:href => '/'}
+        %a{:href => url('/')}
           #logo
             %img.logo{ :src => 'img/forge-logo.png', :height => 65}
             %span.logo.puppet= 'Puppet Forge'
             %span.logo.forge= 'Server'
         .top-search
-          %form{:action => '/modules', :method=>'get'}
+          %form{:action => url('/modules'), :method=>'get'}
             %input{ :type => 'search', :name=>'query', :placeholder=>'Search modules', :autofocus=>''}
             %input.search-btn{ :type=>'submit', :value=>'Find'}
             %span.search_error= ''
