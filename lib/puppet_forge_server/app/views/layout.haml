@@ -21,7 +21,7 @@
     %title Internal Puppet Forge
     -# Latest compiled and minified CSS
     %link{ :href => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css', :type => 'text/css', :rel => 'stylesheet' }
-    %link{ :href => 'css/puppetlabs.css', :type => 'text/css', :rel => 'stylesheet' }
+    %link{ :href => url('css/puppetlabs.css'), :type => 'text/css', :rel => 'stylesheet' }
     -#%link{ :href => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css', :type => 'text/css', :rel => 'stylesheet' }
     /[if lt IE 9]
       %script{:src => 'https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'}
@@ -49,7 +49,7 @@
       .side-width.clearfix
         %a{:href => url('/')}
           #logo
-            %img.logo{ :src => 'img/forge-logo.png', :height => 65}
+            %img.logo{ :src => url('img/forge-logo.png'), :height => 65}
             %span.logo.puppet= 'Puppet Forge'
             %span.logo.forge= 'Server'
         .top-search
@@ -61,4 +61,4 @@
       .side-width.clearfix
         = yield
     %script{ :src => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js' }
-    %script{ :src => 'js/internal.js' }
+    %script{ :src => url('js/internal.js') }
