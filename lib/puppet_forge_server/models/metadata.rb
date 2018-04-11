@@ -14,13 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 module PuppetForgeServer::Models
   class Metadata < Builder
-
     attr_accessor :author, :name, :version, :dependencies, :summary, :description, :project_page, :types
     attr_accessor :checksums, :source, :license, :issues_url, :operatingsystem_support, :requirements
     attr_accessor :puppet_version, :tags, :mail, :classes, :definitions
+    attr_accessor :pdk_version, :template_url, :template_ref, :data_provider, :docs_project
+    attr_accessor :forge_url, :package_release_version, :issue_url
+    attr_accessor :kpn_quality_label, :kpn_module_owner, :kpn_module_support
 
     def initialize(attributes)
       super(attributes)
@@ -28,9 +29,9 @@ module PuppetForgeServer::Models
 
     def ==(other)
       other && self.class.equal?(other.class) &&
-          @author == other.author &&
-          @name == other.name &&
-          @version == other.version
+        @author == other.author &&
+        @name == other.name &&
+        @version == other.version
     end
 
     def hash
@@ -39,9 +40,9 @@ module PuppetForgeServer::Models
 
     def eql?(other)
       other && self.class.equal?(other.class) &&
-          @author.eql?(other.author) &&
-          @name.eql?(other.name) &&
-          @version.eql?(other.version)
+        @author.eql?(other.author) &&
+        @name.eql?(other.name) &&
+        @version.eql?(other.version)
     end
   end
 end
