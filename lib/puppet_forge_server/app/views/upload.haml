@@ -36,7 +36,7 @@
   %div.code-block
     %pre
       :markdown
-        curl -F "file=@pkg/_&lt;name&gt;_-_&lt;version&gt;_.tar.gz" #{request.env['REQUEST_URI']}
+        curl -F "file=@pkg/_&lt;name&gt;_-_&lt;version&gt;_.tar.gz" #{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}#{request.env['REQUEST_URI']}
 
   %span.search_error
     -if upload_status
@@ -47,6 +47,6 @@
       -else
         Upload has failed. #{upload_status}
 
-  %form{:action => '/upload', :method=>'post', :enctype=>'multipart/form-data' }
+  %form{:action => url('/upload'), :method=>'post', :enctype=>'multipart/form-data' }
     %input{ :type => 'file', :name=>'file'}
     %input{ :type=>'submit', :value=>'Upload'}

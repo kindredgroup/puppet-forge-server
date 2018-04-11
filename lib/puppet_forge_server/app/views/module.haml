@@ -47,7 +47,7 @@
               %ul.release-dependencies
                 - module_metadata['metadata']['dependencies'].each do |dep|
                   %li
-                    %a{:href => "/module?name=#{dep['name']}"}= dep['name']
+                    %a{:href => url("/module?name=#{dep['name']}")}= dep['name']
                     - if dep['version_requirement']
                       = "(#{dep['version_requirement']})"
         %section{:id => 'module-release-info'}

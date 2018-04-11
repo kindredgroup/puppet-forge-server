@@ -20,7 +20,7 @@
     - modules.each do |element|
       %li{:class => element['private'] ? 'clearfix private' : 'clearfix'}
         .col
-          %a{:class => "h3", :href => "/module?name=#{element['current_release']['metadata']['name']}" }= "#{element['owner']['username']}/#{element['name']}"
+          %a{:class => "h3", :href => url("/module?name=#{element['current_release']['metadata']['name']}") }= "#{element['owner']['username']}/#{element['name']}"
           %p= element['current_release']['metadata']['summary']
           %span.release-info= "Version #{element['current_release']['metadata']['version']}"
           - if element['current_release']['metadata']['issues_url']
