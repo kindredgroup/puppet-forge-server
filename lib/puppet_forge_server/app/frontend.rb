@@ -48,7 +48,7 @@ module PuppetForgeServer::App
       halt(400, haml(:security, :locals => {:query => query})) \
         unless safe_input? query
 
-      modules = get("#{request.base_url}/v3/modules?query=#{query}")['results']
+      modules = get("/v3/modules?query=#{query}")['results']
       haml :modules, :locals => {:query => query, :modules => modules}
     end
 
@@ -57,12 +57,12 @@ module PuppetForgeServer::App
       halt(400, haml(:security, :locals => {:query => module_v3_name})) \
         unless safe_input? module_v3_name
 
-      releases = get("#{request.base_url}/v3/modules/#{module_v3_name}")['releases']
+      releases = get("/v3/modules/#{module_v3_name}")['releases']
       if params.has_key? 'version'
         module_uri = releases.find {|r| r['version'] == params['version']}['uri']
-        module_metadata = get("#{request.base_url}#{module_uri}")
+        module_metadata = get("#{module_uri}")
       else
-        module_metadata = get("#{request.base_url}#{releases[0]['uri']}")
+        module_metadata = get("#{releases[0]['uri']}")
       end
       begin
         readme_markdown = markdown(module_metadata['readme'])
@@ -70,7 +70,7 @@ module PuppetForgeServer::App
         readme_markdown = ''
       end
       haml :module, :locals => { :module_metadata => module_metadata,
-                                 :base_url => request.base_url,
+                                 :base_url => url(request.base_url),
                                  :readme_markdown => readme_markdown,
                                  :releases => releases }
     end
@@ -88,7 +88,7 @@ module PuppetForgeServer::App
     private
     def get(relative_url)
       begin
-        JSON.parse(@http_client.get(relative_url))
+        JSON.parse(@http_client.get(url(relative_url)))
       rescue
         {'results' => []}
       end

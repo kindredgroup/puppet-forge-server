@@ -60,8 +60,8 @@
                 %label= 'Select another release: '
                 %select{:id => 'module-release-selector', :onchange => "location = this.options[this.selectedIndex].value;"}
                   - releases.each do |release|
-                    %option{:value => "/module?name=#{module_metadata['metadata']['name']}&version=#{release['version']}", :selected => module_metadata['metadata']['version'] == release['version']}= release['version']
-                %a{:class => 'module-release-download', :href => module_metadata['file_uri'], :title => 'Download module'}= 'Download'
+                    %option{:value => url("/module?name=#{module_metadata['metadata']['name']}&version=#{release['version']}"), :selected => module_metadata['metadata']['version'] == release['version']}= release['version']
+                %a{:class => 'module-release-download', :href => url(module_metadata['file_uri']), :title => 'Download module'}= 'Download'
             %div{:id => 'release-info-tabs', :class => 'module-meta-info'}
               %div{:class => 'tabbed content'}
                 %div

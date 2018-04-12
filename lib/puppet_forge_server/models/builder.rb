@@ -18,7 +18,12 @@ module PuppetForgeServer::Models
   class Builder
     def initialize(attributes={})
       attributes.each do |name, value|
-        send("#{name}=", value) unless value.to_s.empty?
+        if name.to_s == 'decription'
+          normalized_name = :description
+        else
+          normalized_name = name.to_s.tr('-', '_').to_sym
+        end
+        send("#{normalized_name}=", value) unless value.to_s.empty?
       end
     end
 
