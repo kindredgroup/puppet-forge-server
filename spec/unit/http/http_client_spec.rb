@@ -51,8 +51,8 @@ describe PuppetForgeServer::Http::HttpClient do
     end
     context 'with 1sec LRU cache' do
       let(:cache) do
-        require 'lrucache'
-        LRUCache.new(:ttl => 1)
+        require 'lru_redux'
+        LruRedux::TTL::Cache.new(100, 1)
       end
       it { expect { load.call }.to run_for < 0.01 }
       it { expect(subject).not_to be_nil }
@@ -78,8 +78,8 @@ describe PuppetForgeServer::Http::HttpClient do
     end
     context 'with 1sec LRU cache' do
       let(:cache) do
-        require 'lrucache'
-        LRUCache.new(:ttl => 1)
+        require 'lru_redux'
+        LruRedux::TTL::Cache.new(1,100)
       end
       it { expect(subject).to eq('Hello!') }
       it { expect { load.call }.to run_for < 0.01 }
