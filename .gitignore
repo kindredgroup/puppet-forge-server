@@ -19,3 +19,4 @@ tmp
 /Gemfile.lock
 /.idea
 /*.iml
+vendor/
