@@ -35,9 +35,11 @@ module PuppetForgeServer::Http
         'User-Agent' => "Puppet-Forge-Server/#{PuppetForgeServer::VERSION}",
         :allow_redirections => :safe,
       }
-      # OpenURI does not work with  http_proxy=http://username:password@proxyserver:port/
-      # so split the proxy_url and feed it basic authentication.
+      # Explicitly set proxy in uri_options
       if ENV.has_key?('http_proxy')
+        @uri_options[:proxy] = URI.parse(ENV['http_proxy'])
+        # OpenURI does not work with  http_proxy=http://username:password@proxyserver:port/
+        # so split the proxy_url and feed it basic authentication.
         proxy = URI.parse(ENV['http_proxy'])
         if proxy.userinfo != nil
           @uri_options[:proxy_http_basic_authentication] = [
